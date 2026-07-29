@@ -1,0 +1,23 @@
+
+> colorsome-next@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 30.2s
+  Running TypeScript ...
+Failed to type check.
+
+./src/app/products/[slug]/page.tsx:1980:13
+Type error: Property 'finish' does not exist on type 'Product'.
+
+  [90m1978 |[0m     product.name.toLowerCase().includes([32m'putty'[0m) || 
+  [90m1979 |[0m     product.description.toLowerCase().includes([32m'cement'[0m) ||
+[31m[1m>[0m [90m1980 |[0m     product.finish?.toLowerCase().includes([32m'kg'[0m);
+  [90m     |[0m             [31m[1m^[0m
+  [90m1981 |[0m
+  [90m1982 |[0m   [36mconst[0m packSizes: string[] = (product [36mas[0m any).packSizes ?? product.packSizes ?? (
+  [90m1983 |[0m     isKgProduct 
+Next.js build worker exited with code: 1 and signal: null
