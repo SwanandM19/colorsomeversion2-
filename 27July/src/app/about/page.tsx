@@ -61,7 +61,7 @@
 //     <Link href="/" className="flex items-center gap-4 flex-shrink-0 min-w-[260px]">
 //       <div className="w-[62px] h-[62px] rounded-2xl flex items-center justify-center bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-[#E8E2D8] p-2 shrink-0">
 //         <Image
-//           src="/Ara_Weather_Coat.png"
+//           src="/AraWeather.png"
 //           alt="Colorsome logo"
 //           width={62}
 //           height={62}
@@ -451,7 +451,7 @@
 //           <Link href="/" className="flex items-center gap-4 flex-shrink-0 min-w-[260px]">
 //             <div className="w-[62px] h-[62px] rounded-2xl flex items-center justify-center bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-[#E8E2D8] p-2 shrink-0">
 //               <Image
-//                 src="/Ara_Weather_Coat.png"
+//                 src="/AraWeather.png"
 //                 alt="Colorsome logo"
 //                 width={62}
 //                 height={62}
@@ -861,12 +861,23 @@ const commitments = [
 ];
 
 export default function AboutPage() {
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: timelineRef,
+  // Separate refs per breakpoint variant — a single ref shared between the
+  // mobile and desktop timeline markup gets silently overwritten by whichever
+  // one renders last, so scroll progress was being measured against the
+  // desktop node even when it was display:none on mobile.
+  const timelineRefMobile = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: scrollYProgressMobile } = useScroll({
+    target: timelineRefMobile,
     offset: ['start end', 'end center'],
   });
-  const lineHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  const lineHeightMobile = useTransform(scrollYProgressMobile, [0, 1], ['0%', '100%']);
+
+  const timelineRefDesktop = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: scrollYProgressDesktop } = useScroll({
+    target: timelineRefDesktop,
+    offset: ['start end', 'end center'],
+  });
+  const lineHeight = useTransform(scrollYProgressDesktop, [0, 1], ['0%', '100%']);
 
   return (
     <div className="bg-[#FDFBF7] min-h-screen pt-[72px] text-charcoal overflow-x-hidden font-sans relative selection:bg-[#F3E7C9]">
@@ -920,7 +931,7 @@ export default function AboutPage() {
               viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}>
               {/* No forced aspect ratio / object-contain here — the image renders at its own
                   natural proportions so there's never letterboxing or cropped edges. */}
-              <div className="relative rounded-2xl sm:rounded-3xl shadow-2xl border border-white/60 overflow-hidden group max-w-[420px] mx-auto lg:max-w-none">
+              <div className="relative rounded-2xl sm:rounded-3xl shadow-[0_20px_50px_rgba(45,45,45,0.1)] border border-white/60 overflow-hidden group max-w-[420px] mx-auto lg:max-w-none">
                 <img
                   src="/Abt.png"
                   alt="Premium textured paint application"
@@ -935,7 +946,7 @@ export default function AboutPage() {
                 viewport={{ once: true }}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute -bottom-6 -left-4 sm:-bottom-7 sm:-left-6 flex items-center gap-4 bg-white rounded-2xl border border-[#EDE6DA] shadow-[0_20px_45px_rgba(45,45,45,0.14)] px-5 py-4 font-inter z-10"
+                className="absolute -bottom-6 -left-2 sm:-bottom-7 sm:-left-6 flex items-center gap-4 bg-white rounded-2xl border border-[#EDE6DA] shadow-[0_20px_45px_rgba(45,45,45,0.14)] px-4 sm:px-5 py-3.5 sm:py-4 font-inter z-10 max-w-[calc(100%-1rem)]"
               >
                 <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-[#8C6478] to-[#C4704B] flex items-center justify-center shadow-[0_8px_18px_rgba(196,112,75,0.35)] shrink-0">
                   <Droplets className="w-5 h-5 text-white" />
@@ -1039,16 +1050,22 @@ export default function AboutPage() {
       {/* ── VALUES ── */}
       <section className="py-14 sm:py-20 md:py-28 relative">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
-          <div className="text-center mb-10 sm:mb-16">
+          <motion.div
+            className="text-center mb-10 sm:mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <p className="text-[10px] uppercase tracking-[0.25em] text-[#8C6478] font-black font-inter mb-2">Our Pillars</p>
             <h2 className="font-serif text-[clamp(1.8rem,5vw,3rem)] font-bold text-charcoal">What We Stand For</h2>
-          </div>
+          </motion.div>
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
             initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} variants={staggerContainer}>
             {values.map((v, i) => (
               <motion.div key={v.title} variants={fadeInUp} whileHover={{ y: -6 }}
-                className="group relative bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 border shadow-sm hover:shadow-xl hover:bg-white transition-all duration-300 overflow-hidden"
+                className="group relative bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 border shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_50px_rgba(45,45,45,0.1)] hover:bg-white transition-all duration-300 overflow-hidden"
                 style={{ borderColor: `${v.color}25` }}
               >
                 {/* Oversized ghost index number */}
@@ -1087,7 +1104,7 @@ export default function AboutPage() {
               <p className="text-sm sm:text-base text-charcoal/75 leading-relaxed mb-6 font-inter">
                 From structural product testing to final execution walkthroughs, we hold ourselves to absolute standards. Our commitment isn't just wordplay it's the foundation of every client partnership.
               </p>
-              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[4/3] shadow-2xl border border-white/60 group">
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[4/3] shadow-[0_20px_50px_rgba(45,45,45,0.1)] border border-white/60 group">
                 <Image src="/aboutpage.png" alt="Paint mixing facility" fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105" unoptimized />
               </div>
@@ -1116,14 +1133,15 @@ export default function AboutPage() {
               <motion.div variants={fadeInUp} className="mt-6 sm:mt-8">
                 <Link
                   href="/assistance"
-                  className="group flex items-center justify-between gap-4 rounded-2xl p-5 sm:p-6 text-white transition-transform duration-300 hover:-translate-y-0.5"
+                  className="group relative overflow-hidden flex items-center justify-between gap-4 rounded-2xl p-5 sm:p-6 text-white transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98]"
                   style={{ background: 'linear-gradient(135deg, #8C6478, #C4704B)' }}
                 >
-                  <div>
+                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)' }} />
+                  <div className="relative">
                     <p className="font-serif text-base sm:text-lg font-bold leading-tight">See These Promises in Action</p>
                     <p className="text-xs text-white/70 mt-1">Book a free expert consultation</p>
                   </div>
-                  <ArrowRight className="w-5 h-5 shrink-0 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="w-5 h-5 shrink-0 relative transition-transform group-hover:translate-x-1" />
                 </Link>
               </motion.div>
             </motion.div>
@@ -1135,34 +1153,40 @@ export default function AboutPage() {
       {/* ── MILESTONES / TIMELINE ── */}
       <section className="py-14 sm:py-20 md:py-28 relative">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12 sm:mb-16">
+          <motion.div
+            className="text-center mb-12 sm:mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <p className="text-[10px] uppercase tracking-[0.25em] text-[#8C6478] font-black font-inter mb-2">Chronology</p>
             <h2 className="font-serif text-[clamp(1.8rem,5vw,3rem)] font-bold text-charcoal">Our Journey</h2>
-          </div>
+          </motion.div>
 
           {/* ── MOBILE: vertical stacked cards (no absolute positioning) ── */}
-          <div className="md:hidden flex flex-col gap-0 relative pl-10" ref={timelineRef}>
+          <div className="md:hidden flex flex-col gap-0 relative pl-10" ref={timelineRefMobile}>
             <div className="absolute left-4 top-0 bottom-0 w-px bg-[#EDE6DA]" />
-            <motion.div style={{ height: lineHeight }}
+            <motion.div style={{ height: lineHeightMobile }}
               className="absolute left-4 top-0 w-px bg-gradient-to-b from-[#8C6478] to-[#C4704B] origin-top" />
             {milestones.map((m, i) => (
               <motion.div key={m.year} className="relative mb-8 last:mb-0 flex items-start gap-4"
                 initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.6 }} variants={fadeInUp}>
                 {/* dot */}
-                <div className="absolute -left-10 top-3 w-8 h-8 rounded-full bg-white border-2 border-[#C4704B] shadow flex items-center justify-center shrink-0 z-10">
+                <div className="absolute -left-10 top-3 w-8 h-8 rounded-full bg-white border-2 border-[#C4704B] shadow-[0_8px_18px_rgba(196,112,75,0.25)] flex items-center justify-center shrink-0 z-10">
                   <m.icon className="w-3.5 h-3.5 text-[#C4704B]" />
                 </div>
                 {/* card */}
                 <div className="bg-white/90 rounded-2xl p-4 border border-[#EDE6DA]/70 shadow-sm w-full">
                   <span className="font-serif text-xl font-bold bg-gradient-to-r from-[#8C6478] to-[#C4704B] bg-clip-text text-transparent block mb-1">{m.year}</span>
-                  <p className="text-xs font-bold tracking-wide font-inter text-charcoal leading-relaxed">{m.event}</p>
+                  <p className="text-[13px] sm:text-xs font-bold tracking-wide font-inter text-charcoal leading-relaxed">{m.event}</p>
                 </div>
               </motion.div>
             ))}
           </div>
 
           {/* ── DESKTOP: alternating timeline ── */}
-          <div className="hidden md:block max-w-3xl mx-auto relative" ref={timelineRef}>
+          <div className="hidden md:block max-w-3xl mx-auto relative" ref={timelineRefDesktop}>
             <div className="absolute left-1/2 top-0 bottom-0 w-px bg-[#EDE6DA] -translate-x-1/2" />
             <motion.div style={{ height: lineHeight }}
               className="absolute left-1/2 top-0 w-px bg-gradient-to-b from-[#8C6478] to-[#C4704B] -translate-x-1/2 origin-top" />
@@ -1175,7 +1199,7 @@ export default function AboutPage() {
                   {/* dot */}
                   <div className="absolute left-1/2 -translate-x-1/2 z-10">
                     <motion.div whileHover={{ scale: 1.1 }}
-                      className="w-12 h-12 rounded-full bg-white border-4 border-[#FDFBF7] shadow-xl ring-2 ring-[#C4704B]/50 flex items-center justify-center">
+                      className="w-12 h-12 rounded-full bg-white border-4 border-[#FDFBF7] shadow-[0_12px_30px_rgba(0,0,0,0.15)] ring-2 ring-[#C4704B]/50 flex items-center justify-center">
                       <m.icon className="w-4 h-4 text-[#C4704B]" />
                     </motion.div>
                   </div>
@@ -1210,7 +1234,7 @@ export default function AboutPage() {
           </motion.div>
 
           {/* Image — shown whole, no forced crop, framed like a showcase piece */}
-          <motion.div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/60 group"
+          <motion.div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(45,45,45,0.1)] border border-white/60 group"
             initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.7 }}>
             <img
@@ -1232,7 +1256,7 @@ export default function AboutPage() {
       <section className="py-14 sm:py-20 md:py-24 relative">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
           <motion.div
-            className="max-w-[960px] mx-auto text-center rounded-2xl sm:rounded-3xl p-8 sm:p-12 md:p-16 shadow-2xl relative overflow-hidden"
+            className="max-w-[960px] mx-auto text-center rounded-2xl sm:rounded-3xl p-8 sm:p-12 md:p-16 shadow-[0_30px_80px_rgba(0,0,0,0.35)] relative overflow-hidden"
             style={{ background: `linear-gradient(165deg, #241D16 0%, #1A1A1A 55%, #150F0B 100%)` }}
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.6 }}>
@@ -1273,12 +1297,12 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center font-inter relative z-10 max-w-xs sm:max-w-none mx-auto">
               <Link href="/products"
-                className="group relative overflow-hidden px-6 sm:px-8 py-3.5 bg-[#F3E7C9] text-[#2D2D2D] rounded-xl text-xs uppercase tracking-widest font-black shadow hover:shadow-xl hover:bg-[#ebdcb4] transition-all text-center">
+                className="group relative overflow-hidden px-6 sm:px-8 py-4 sm:py-3.5 bg-[#F3E7C9] text-[#2D2D2D] rounded-xl text-xs uppercase tracking-widest font-black shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.3)] hover:bg-[#ebdcb4] hover:scale-[1.02] active:scale-[0.98] transition-all text-center">
                 <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.6) 50%, transparent 70%)' }} />
                 <span className="relative">Explore Master Palettes</span>
               </Link>
               <Link href="/assistance"
-                className="px-6 sm:px-8 py-3.5 bg-transparent text-white border-2 border-white/20 rounded-xl text-xs uppercase tracking-widest font-black hover:border-[#C4704B] hover:text-[#C4704B] hover:bg-[#C4704B]/5 transition-all text-center">
+                className="px-6 sm:px-8 py-4 sm:py-3.5 bg-transparent text-white border-2 border-white/20 rounded-xl text-xs uppercase tracking-widest font-black hover:border-[#C4704B] hover:text-[#C4704B] hover:bg-[#C4704B]/5 hover:scale-[1.02] active:scale-[0.98] transition-all text-center">
                 Request Art Direction
               </Link>
             </div>

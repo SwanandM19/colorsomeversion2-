@@ -49,7 +49,7 @@ export function Footer() {
             <Link href="/" className="inline-flex items-center gap-3 group">
               <div className="w-11 h-12 rounded-xl flex items-center justify-center bg-white p-1.5 shadow-sm border border-white/10 shrink-0 transition-transform duration-500 group-hover:rotate-6">
                 <Image
-                  src="/Ara_Weather_Coat.png"
+                  src="/Logo.png"
                   alt="Colorsome logo"
                   width={44}
                   height={48}
@@ -73,9 +73,14 @@ export function Footer() {
             </p>
 
             <div className="space-y-4 pt-5 text-xs md:text-sm text-white/55 font-light max-w-sm border-t border-white/[0.06]">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 shrink-0 mt-0.5 opacity-90" style={{ color: accent }} />
-                <span className="leading-relaxed font-light">
+              <div className="flex items-start gap-3 group">
+                <span
+                  className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110"
+                  style={{ background: `${accent}15` }}
+                >
+                  <MapPin className="w-3.5 h-3.5" style={{ color: accent }} />
+                </span>
+                <span className="leading-relaxed font-light pt-1.5">
                   C-403, Akshay Villa, Ram Nagari, Behind D-Mart, Mumbai-Pune
                   Bypass Road, Ambegaon Budruk, Katraj, Pune 411046
                 </span>
@@ -84,7 +89,12 @@ export function Footer() {
                 href="tel:+917502000079"
                 className="flex items-center gap-3 hover:text-white transition-colors w-fit group"
               >
-                <Phone className="w-4 h-4 shrink-0 opacity-90" style={{ color: accent }} />
+                <span
+                  className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110"
+                  style={{ background: `${accent}15` }}
+                >
+                  <Phone className="w-3.5 h-3.5" style={{ color: accent }} />
+                </span>
                 <span className="font-mono tracking-wide group-hover:translate-x-0.5 transition-transform">
                   +91-7502-0000-79
                 </span>
@@ -93,7 +103,12 @@ export function Footer() {
                 href="mailto:info@colorsomepaints.com"
                 className="flex items-center gap-3 hover:text-white transition-colors w-fit group"
               >
-                <Mail className="w-4 h-4 shrink-0 opacity-90" style={{ color: accent }} />
+                <span
+                  className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110"
+                  style={{ background: `${accent}15` }}
+                >
+                  <Mail className="w-3.5 h-3.5" style={{ color: accent }} />
+                </span>
                 <span className="group-hover:translate-x-0.5 transition-transform font-light">
                   info@colorsomepaints.com
                 </span>
@@ -110,7 +125,6 @@ export function Footer() {
             <ul className="space-y-3.5 text-sm text-white/55 font-light">
               {macroRanges.map((range) => (
                 <li key={range.name}>
-                  {/* Optional query parsing can update your active filter state on the products page */}
                   <Link
                     href={`/products?category=${encodeURIComponent(range.slug)}`}
                     className="hover:text-[#F3E7C9] hover:translate-x-0.5 inline-block transition-all duration-200"
@@ -178,6 +192,10 @@ export function Footer() {
                 Browse Products
                 <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
               </Link>
+              <p className="flex items-center gap-1.5 text-[11px] text-white/40 font-light pt-1">
+                <Sparkles className="w-3 h-3 shrink-0" style={{ color: accent }} />
+                Avg. 12hr response time on consultation requests
+              </p>
             </div>
           </motion.div>
         </div>

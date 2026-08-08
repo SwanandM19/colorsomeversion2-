@@ -4,7 +4,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useInView, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import {
   ArrowRight,
   Droplets,
@@ -31,6 +31,9 @@ import {
   Menu,
   X,
   Quote,
+  Wallet,
+  Waves,
+  ClipboardList,
 } from "lucide-react";
 
 import { Inter, Playfair_Display } from "next/font/google";
@@ -90,6 +93,12 @@ const BRAND = {
   // "stock dark-mode" look of pure #1A1A1A.
   dark: "#1C1712",
 };
+
+// Expo-out easing for the hero showcase crossfade — decelerates smoothly all
+// the way to rest with no overshoot, unlike a spring (which was producing a
+// bouncy "pop" as products swapped). Shared across every showcase transition
+// (desktop + mobile) so the whole card reads as one cinematic dissolve.
+const EASE_DISSOLVE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const ACCENTS = [
   BRAND.pink,
@@ -285,27 +294,47 @@ function Section({
 function MarqueeCard({
   product,
   accent,
+  tabbable,
 }: {
   product: Product;
   accent: string;
+  /** Only the first pass of cards should be keyboard-reachable — the
+   * duplicated second pass exists purely for the seamless CSS loop and
+   * would otherwise double every product in the tab order. */
+  tabbable: boolean;
 }) {
   return (
-    <div className="flex-shrink-0 w-64 mx-3 rounded-[1.5rem] overflow-hidden bg-white shadow-[0_8px_24px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_45px_rgba(0,0,0,0.10)] hover:-translate-y-1 transition-all duration-400 group cursor-pointer">
-      <Link href={`/products/${product.slug}`}>
+    <div className="flex-shrink-0 w-64 mx-3 rounded-[1.5rem] overflow-hidden bg-white shadow-[0_8px_24px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_45px_rgba(0,0,0,0.12)] hover:-translate-y-1.5 transition-all duration-400 group cursor-pointer border border-transparent hover:border-[color:var(--card-accent)]/25"
+      style={{ ["--card-accent" as string]: accent }}
+    >
+      <Link
+        href={`/products/${product.slug}`}
+        tabIndex={tabbable ? 0 : -1}
+        aria-hidden={!tabbable}
+        className="relative block focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded-[1.5rem]"
+        style={{ ["--tw-ring-color" as string]: accent }}
+      >
         <div className="h-1.5 w-full" style={{ background: accent }} />
         <div
-          className="relative flex items-center justify-center bg-[#F8F6F2] px-4"
+          className="relative flex items-center justify-center bg-[#F8F6F2] px-4 overflow-hidden"
           style={{ height: 180 }}
         >
           <div
             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
             style={{
-              background: `radial-gradient(ellipse at center, ${accent}20 0%, transparent 70%)`,
+              background: `radial-gradient(ellipse at center, ${accent}22 0%, transparent 70%)`,
             }}
+          />
+          {/* Soft "floor" shadow under the product — reads more like real
+              product photography than a flat cutout on a plain card. */}
+          <div
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 w-28 h-4 rounded-full blur-md opacity-40 group-hover:opacity-60 transition-opacity duration-300"
+            style={{ background: accent }}
           />
           <motion.img
             src={product.image}
             alt={product.name}
+            loading="lazy"
             className="h-36 w-auto max-w-[92%] object-contain drop-shadow-md relative z-10"
             whileHover={{ scale: 1.08, rotate: 1 }}
             transition={{ type: "spring", damping: 15 }}
@@ -317,21 +346,54 @@ function MarqueeCard({
             {product.category?.split(" ")[0] ?? "Paint"}
           </span>
         </div>
-        <div className="px-4 py-3">
+        <div className="px-4 py-3.5">
           <h4 className="mini-title truncate">{product.name}</h4>
-          <p className="text-xs text-charcoal-muted mt-1 truncate">
-            {product.description || "Premium paint product"}
-          </p>
+          {product.features && product.features.length > 0 ? (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {product.features.slice(0, 2).map((f) => (
+                <span
+                  key={f}
+                  className="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full"
+                  style={{ background: `${accent}16`, color: accent }}
+                >
+                  {f}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-charcoal-muted mt-1 truncate">
+              {product.description || "Premium paint product"}
+            </p>
+          )}
           <span
-            className="inline-flex items-center gap-1 mt-2 text-[10px] font-bold uppercase tracking-wider"
+            className="inline-flex items-center gap-1 mt-2.5 text-[10px] font-bold uppercase tracking-wider transition-transform duration-300 group-hover:translate-x-0.5"
             style={{ color: accent }}
           >
             View <ArrowRight className="w-2.5 h-2.5" />
           </span>
         </div>
+        {/* Shimmer sweep on hover — same light-sweep language used on this
+            site's primary CTA buttons, so the card reads as consistent
+            with the rest of the premium UI rather than a bespoke effect. */}
+        <span
+          className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out z-20"
+          style={{ background: "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)" }}
+        />
       </Link>
     </div>
   );
+}
+
+function useReducedMotionPreference() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return reduced;
 }
 
 function InfiniteMarquee({
@@ -343,23 +405,44 @@ function InfiniteMarquee({
   speed?: number;
   reverse?: boolean;
 }) {
+  const [paused, setPaused] = useState(false);
+  const prefersReducedMotion = useReducedMotionPreference();
   const loopedProducts = [...products, ...products];
+  const isPaused = paused || prefersReducedMotion;
 
   return (
-    <div className="overflow-hidden py-2">
-      <motion.div
+    <div
+      className="overflow-hidden py-2 relative touch-pan-y"
+      style={{
+        maskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
+        WebkitMaskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
+      }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
+    >
+      <div
         className="flex w-max"
-        animate={{ x: reverse ? ["-50%", "0%"] : ["0%", "-50%"] }}
-        transition={{ duration: speed, repeat: Infinity, ease: "linear" }}
+        style={{
+          animationName: reverse ? "marqueeReverse" : "marqueeForward",
+          animationDuration: `${speed}s`,
+          animationTimingFunction: "linear",
+          animationIterationCount: "infinite",
+          animationPlayState: isPaused ? "paused" : "running",
+        }}
       >
         {loopedProducts.map((p, i) => (
           <MarqueeCard
             key={`${p.id}-${i}`}
             product={p}
             accent={ACCENTS[i % ACCENTS.length]}
+            tabbable={i < products.length}
           />
         ))}
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -596,22 +679,6 @@ export default function HomePage() {
   const [products] = useState<Product[]>(HARDCODED_PRODUCTS);
   const [shades] = useState<Shade[]>(HARDCODED_SHADES);
   const [isLoading] = useState(false);
-  const [calcArea, setCalcArea] = useState("");
-  const [calcCoats, setCalcCoats] = useState("2");
-  const [calcResult, setCalcResult] = useState<string | null>(null);
-  const [calcCity, setCalcCity] = useState("bangalore");
-  const [calcPart, setCalcPart] = useState("Interior");
-  const [calcBhk, setCalcBhk] = useState("2 BHK");
-  const [calcSqft, setCalcSqft] = useState("");
-  const [calcTier, setCalcTier] = useState("premium");
-  const [calcType, setCalcType] = useState("Fresh Painting");
-  const [calcAdvancedResult, setCalcAdvancedResult] = useState<{
-    cost: string;
-    area: string;
-    tier: string;
-    city: string;
-    type: string;
-  } | null>(null);
   const [sliderPos, setSliderPos] = useState(50);
   const [activeTransform, setActiveTransform] = useState(0);
   const [showConsultationPopup, setShowConsultationPopup] = useState(false);
@@ -631,85 +698,66 @@ export default function HomePage() {
     "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
   ];
 
+  const HERO_SHOWCASE_LENGTH = 6; // must match the SHOWCASE array length below
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isShowcasePaused, setIsShowcasePaused] = useState(false);
+  const [showcaseResetKey, setShowcaseResetKey] = useState(0);
+  const prefersReducedMotionHero = useReducedMotionPreference();
 
   useEffect(() => {
+    if (isShowcasePaused || prefersReducedMotionHero) return;
+    // Sequential, not random — random selection let the same-feeling jump
+    // happen back-to-back and gave no sense of "next" vs "previous", which
+    // fought against the dot navigation below. showcaseResetKey lets a
+    // manual dot click restart the 5s window instead of cutting it short.
     const loopInterval = setInterval(() => {
-      setCurrentImageIndex((prev) => {
-        let nextIdx;
-        do {
-          nextIdx = Math.floor(Math.random() * 3);
-        } while (nextIdx === prev);
-        return nextIdx;
-      });
+      setCurrentImageIndex((prev) => (prev + 1) % HERO_SHOWCASE_LENGTH);
     }, 5000);
     return () => clearInterval(loopInterval);
-  }, []);
+  }, [isShowcasePaused, prefersReducedMotionHero, showcaseResetKey]);
 
-  const handleCalc = () => {
-    const area = parseFloat(calcArea),
-      coats = parseInt(calcCoats);
-    if (area > 0 && coats > 0)
-      setCalcResult(
-        `Approximately ${((area * coats) / 130).toFixed(1)} liters needed for ${area} sq ft with ${coats} coat${coats > 1 ? "s" : ""}`,
-      );
+  const selectShowcase = (i: number) => {
+    setCurrentImageIndex(i);
+    setShowcaseResetKey((k) => k + 1);
   };
 
-  const handleCalcAdvanced = () => {
-    const bhkAreaMap: Record<string, number> = {
-      "1 BHK": 575,
-      "2 BHK": 950,
-      "3 BHK": 1400,
-      "4 BHK+": 2100,
-    };
-    const manualSqft = parseFloat(calcSqft);
-    const carpetArea =
-      !isNaN(manualSqft) && manualSqft > 0
-        ? manualSqft
-        : (bhkAreaMap[calcBhk] ?? 950);
+  // Cursor-driven 3D tilt + glare for the desktop showcase card — springs
+  // back to flat on pointer leave. Raw motion values feed useSpring so the
+  // tilt itself is smoothed (no jitter following the raw pointer), while the
+  // glare position tracks the pointer directly for a crisp "light on glass"
+  // read. Disabled under prefers-reduced-motion like every other showcase
+  // animation.
+  const showcaseTiltX = useMotionValue(0);
+  const showcaseTiltY = useMotionValue(0);
+  const showcaseSpringTiltX = useSpring(showcaseTiltX, { stiffness: 150, damping: 20, mass: 0.5 });
+  const showcaseSpringTiltY = useSpring(showcaseTiltY, { stiffness: 150, damping: 20, mass: 0.5 });
+  const showcaseGlareX = useMotionValue(50);
+  const showcaseGlareY = useMotionValue(50);
+  const showcaseGlareOpacityRaw = useMotionValue(0);
+  const showcaseGlareOpacity = useSpring(showcaseGlareOpacityRaw, { stiffness: 200, damping: 25 });
+  // Hoisted out of the JSX below — useTransform is a hook and must be called
+  // from the component body, not from inside the nested showcase-render
+  // closure, even though that closure runs unconditionally every render.
+  const showcaseGlareBackground = useTransform(
+    [showcaseGlareX, showcaseGlareY],
+    ([gx, gy]: number[]) => `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.35) 0%, transparent 45%)`
+  );
 
-    const paintableArea = Math.round(carpetArea * 3.5);
-    const tierRateMap: Record<string, [number, number]> = {
-      economy: [12, 18],
-      premium: [20, 28],
-      luxury: [30, 45],
-    };
-    const cityMultiplier: Record<string, number> = {
-      mumbai: 1.15,
-      bangalore: 1.0,
-      delhi: 1.0,
-      hyderabad: 0.95,
-      pune: 1.0,
-      chennai: 0.92,
-      kolkata: 0.88,
-      other: 0.9,
-    };
-    const typeMultiplier: Record<string, number> = {
-      "Fresh Painting": 1.0,
-      "Re-Painting": 0.72,
-      "Rental Painting": 0.55,
-    };
-    const [rateMin, rateMax] = tierRateMap[calcTier] ?? [20, 28];
-    const cm = cityMultiplier[calcCity] ?? 1.0;
-    const tm = typeMultiplier[calcType] ?? 1.0;
-    const parts = calcPart === "Both" ? 1.4 : 1.0;
-
-    const low =
-      Math.round((paintableArea * rateMin * cm * tm * parts) / 1000) * 1000;
-    const high =
-      Math.round((paintableArea * rateMax * cm * tm * parts) / 1000) * 1000;
-    const fmt = (n: number) =>
-      n >= 100000
-        ? `₹${(n / 100000).toFixed(1)}L`
-        : `₹${(n / 1000).toFixed(0)}K`;
-
-    setCalcAdvancedResult({
-      cost: `${fmt(low)} – ${fmt(high)}`,
-      area: `${paintableArea.toLocaleString()} sq ft`,
-      tier: calcTier.charAt(0).toUpperCase() + calcTier.slice(1),
-      city: calcCity.charAt(0).toUpperCase() + calcCity.slice(1),
-      type: calcType,
-    });
+  const handleShowcasePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (prefersReducedMotionHero) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    showcaseTiltY.set((px - 0.5) * 14);
+    showcaseTiltX.set((0.5 - py) * 10);
+    showcaseGlareX.set(px * 100);
+    showcaseGlareY.set(py * 100);
+    showcaseGlareOpacityRaw.set(1);
+  };
+  const handleShowcasePointerLeave = () => {
+    showcaseTiltX.set(0);
+    showcaseTiltY.set(0);
+    showcaseGlareOpacityRaw.set(0);
   };
 
   const updateSliderPosition = (clientX: number) => {
@@ -933,14 +981,138 @@ export default function HomePage() {
                   name: "Tough Tex",
                   cat: "Texture Paint",
                   feat: ["Textured", "Decorative", "Strong"],
-                  accent: "#9333ea",
-                  bg: "#FAF5FF",
+                  accent: BRAND.pink,
+                  bg: "#FAF5FA",
                 },
               ];
               const idx = currentImageIndex % SHOWCASE.length;
               const active = SHOWCASE[idx];
 
               return (
+                <>
+                {/* Compact mobile/tablet counterpart — the full desktop showcase
+                    below is deliberately hidden under lg since its floating
+                    badges don't fit a narrow viewport, but mobile still gets a
+                    real product visual instead of just the text column. */}
+                <motion.div
+                  className="lg:hidden relative rounded-[1.75rem] overflow-hidden shadow-[0_20px_50px_rgba(45,45,45,0.08)] mt-2 aspect-[4/3] sm:aspect-[16/10]"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  onTouchStart={() => setIsShowcasePaused(true)}
+                  onTouchEnd={() => setIsShowcasePaused(false)}
+                >
+                  <div className="absolute top-0 left-0 right-0 z-30 h-[3px] bg-black/10">
+                    <div
+                      key={`mobile-progress-${idx}-${showcaseResetKey}`}
+                      className="h-full origin-left"
+                      style={{
+                        background: active.accent,
+                        animationName: "heroProgressFill",
+                        animationDuration: "5s",
+                        animationTimingFunction: "linear",
+                        animationFillMode: "forwards",
+                        animationPlayState: isShowcasePaused || prefersReducedMotionHero ? "paused" : "running",
+                      }}
+                    />
+                  </div>
+                  <AnimatePresence>
+                    <motion.div
+                      key={`mobile-bg-${idx}`}
+                      className="absolute inset-0"
+                      style={{ background: `radial-gradient(ellipse at 60% 40%, ${active.accent}22 0%, ${active.bg} 65%)` }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.9, ease: EASE_DISSOLVE }}
+                    />
+                  </AnimatePresence>
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`mobile-cat-${idx}`}
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 6 }}
+                      transition={{ duration: 0.35, ease: EASE_DISSOLVE }}
+                      className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.14em] text-white shadow-[0_8px_24px_rgba(0,0,0,0.15)]"
+                      style={{ background: active.accent }}
+                    >
+                      {active.cat}
+                    </motion.div>
+                  </AnimatePresence>
+                  <div className="absolute inset-0 z-10">
+                    {/* Each image is independently centered via inset-0 + m-auto
+                        rather than flexed side-by-side with its sibling — during
+                        the crossfade, both the exiting and entering <img> are
+                        mounted at once, and as flex siblings they fought for
+                        width and could spill past the card edge (overflow-hidden
+                        doesn't reliably clip a transformed, drop-shadowed flex
+                        child in every browser). Absolute + margin:auto makes
+                        them stack on top of each other instead. */}
+                    <AnimatePresence>
+                      <motion.img
+                        key={`mobile-img-${idx}`}
+                        src={active.src}
+                        alt={active.name}
+                        className="absolute inset-0 m-auto object-contain w-auto h-[60%] sm:h-[65%]"
+                        // See the desktop card's img for why drop-shadow is folded
+                        // into the animated filter string instead of left as a class.
+                        initial={{ opacity: 0, scale: 1.05, filter: "blur(10px) drop-shadow(0 25px 25px rgba(0,0,0,0.15))" }}
+                        animate={{ opacity: 1, scale: 1, filter: "blur(0px) drop-shadow(0 25px 25px rgba(0,0,0,0.15))" }}
+                        exit={{ opacity: 0, scale: 0.96, filter: "blur(8px) drop-shadow(0 25px 25px rgba(0,0,0,0.15))" }}
+                        transition={{ duration: 0.75, ease: EASE_DISSOLVE }}
+                      />
+                    </AnimatePresence>
+                  </div>
+                  <div
+                    className="absolute bottom-0 left-0 right-0 z-20 px-5 pt-5 pb-4"
+                    style={{ background: "linear-gradient(to top, rgba(255,255,255,0.96) 60%, transparent)" }}
+                  >
+                    <div className="flex items-center gap-1.5 mb-3">
+                      {SHOWCASE.map((item, i) => (
+                        <button
+                          key={item.name}
+                          type="button"
+                          aria-label={`Show ${item.name}`}
+                          onClick={() => selectShowcase(i)}
+                          className="h-1.5 rounded-full transition-all duration-300"
+                          style={{
+                            width: i === idx ? 18 : 6,
+                            background: i === idx ? active.accent : "rgba(45,45,45,0.18)",
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`mobile-info-${idx}`}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.4, ease: EASE_DISSOLVE }}
+                      >
+                        <p className="text-lg font-bold text-[#1A1A1A] leading-tight mb-1.5" style={{ fontFamily: "var(--font-cormorant)" }}>
+                          {active.name}
+                        </p>
+                        <div className="flex gap-1.5 flex-wrap">
+                          {active.feat.map((f, i) => (
+                            <motion.span
+                              key={f}
+                              initial={{ opacity: 0, y: 6 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.3, delay: 0.08 + i * 0.06, ease: EASE_DISSOLVE }}
+                              className="text-[9px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wide"
+                              style={{ background: `${active.accent}18`, color: active.accent }}
+                            >
+                              {f}
+                            </motion.span>
+                          ))}
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
+
                 <motion.div
                   className="hidden lg:block relative"
                   initial={{ opacity: 0, x: 60 }}
@@ -951,13 +1123,41 @@ export default function HomePage() {
                     stiffness: 100,
                     delay: 0.3,
                   }}
-                  style={{ width: 460, flexShrink: 0 }}
+                  style={{ width: 460, flexShrink: 0, perspective: 1200 }}
+                  onMouseEnter={() => setIsShowcasePaused(true)}
+                  onMouseLeave={() => {
+                    setIsShowcasePaused(false);
+                    handleShowcasePointerLeave();
+                  }}
+                  onFocusCapture={() => setIsShowcasePaused(true)}
+                  onBlurCapture={() => setIsShowcasePaused(false)}
+                  onPointerMove={handleShowcasePointerMove}
                 >
-                  <div
+                  <motion.div
                     className="relative rounded-[2rem] overflow-hidden shadow-2xl"
-                    style={{ height: 480 }}
+                    style={{
+                      height: 480,
+                      rotateX: showcaseSpringTiltX,
+                      rotateY: showcaseSpringTiltY,
+                      transformStyle: "preserve-3d",
+                    }}
                   >
-                    <AnimatePresence mode="wait">
+                    <div className="absolute top-0 left-0 right-0 z-30 h-[3px] bg-black/10">
+                      <div
+                        key={`progress-${idx}-${showcaseResetKey}`}
+                        className="h-full origin-left"
+                        style={{
+                          background: active.accent,
+                          animationName: "heroProgressFill",
+                          animationDuration: "5s",
+                          animationTimingFunction: "linear",
+                          animationFillMode: "forwards",
+                          animationPlayState: isShowcasePaused || prefersReducedMotionHero ? "paused" : "running",
+                        }}
+                      />
+                    </div>
+
+                    <AnimatePresence>
                       <motion.div
                         key={`bg-${idx}`}
                         className="absolute inset-0"
@@ -967,7 +1167,7 @@ export default function HomePage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.6 }}
+                        transition={{ duration: 0.9, ease: EASE_DISSOLVE }}
                       />
                     </AnimatePresence>
 
@@ -978,7 +1178,7 @@ export default function HomePage() {
                       }}
                     />
 
-                    <AnimatePresence mode="wait">
+                    <AnimatePresence>
                       <motion.div
                         key={`blob-${idx}`}
                         className="absolute rounded-full blur-3xl"
@@ -991,27 +1191,40 @@ export default function HomePage() {
                           marginLeft: -130,
                           background: `radial-gradient(circle, ${active.accent}40 0%, transparent 70%)`,
                         }}
-                        initial={{ scale: 0.6, opacity: 0 }}
+                        initial={{ scale: 0.88, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.8, opacity: 0 }}
-                        transition={{ duration: 0.5 }}
+                        exit={{ scale: 1.05, opacity: 0 }}
+                        transition={{ duration: 0.8, ease: EASE_DISSOLVE }}
                       />
                     </AnimatePresence>
 
-                    <div
-                      className="absolute top-5 left-5 z-20 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.14em] text-white shadow-md"
-                      style={{ background: active.accent }}
-                    >
-                      {active.cat}
-                    </div>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`cat-${idx}`}
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 6 }}
+                        transition={{ duration: 0.35, ease: EASE_DISSOLVE }}
+                        className="absolute top-5 left-5 z-20 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.14em] text-white shadow-[0_8px_24px_rgba(0,0,0,0.15)]"
+                        // z lifts this off the card's own plane — combined with
+                        // transformStyle:"preserve-3d" on the card (set where the
+                        // cursor-tilt is applied), the badge visibly separates from
+                        // the background as the card tilts, instead of the whole
+                        // card reading as one flat tilted sheet.
+                        style={{ background: active.accent, z: 40 }}
+                      >
+                        {active.cat}
+                      </motion.div>
+                    </AnimatePresence>
 
                     <motion.div
                       initial={{ opacity: 0, scale: 0.7 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 1.0, type: "spring", damping: 15 }}
-                      className="absolute top-5 right-5 z-20 text-white rounded-2xl shadow-lg px-4 py-3 text-center"
+                      className="absolute top-5 right-5 z-20 text-white rounded-2xl shadow-[0_12px_30px_rgba(0,0,0,0.18)] px-4 py-3 text-center"
                       style={{
                         background: `linear-gradient(135deg, ${accents[1]}, ${accents[4]}, ${accents[2]})`,
+                        z: 55,
                       }}
                     >
                       <p
@@ -1025,24 +1238,43 @@ export default function HomePage() {
                       </p>
                     </motion.div>
 
-                    <div className="absolute inset-0 flex items-center justify-center z-10">
-                      <AnimatePresence mode="wait">
-                        <motion.img
-                          key={`img-${idx}`}
-                          src={active.src}
-                          alt={active.name}
-                          className="object-contain drop-shadow-2xl"
-                          style={{ width: 600, height: 600 }}
-                          initial={{ opacity: 0, scale: 0.78, y: 24 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.85, y: -20 }}
-                          transition={{
-                            type: "spring",
-                            damping: 20,
-                            stiffness: 160,
-                          }}
-                        />
-                      </AnimatePresence>
+                    <div className="absolute inset-0 z-10">
+                      {/* Idle float lives on its own wrapper, separate from the
+                          ground-contact shadow ellipse below — bobbing both
+                          together would drag the shadow along with the product,
+                          which reads as wrong (a lifted object's shadow stays
+                          put, it doesn't follow it). */}
+                      <motion.div
+                        className="absolute inset-0"
+                        style={{ z: 65 }}
+                        animate={prefersReducedMotionHero ? undefined : { y: [0, -8, 0] }}
+                        transition={prefersReducedMotionHero ? undefined : { duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        {/* Independently centered via inset-0 + m-auto, not flexed
+                            side-by-side — see the mobile card above for why: two
+                            ~600px-wide images as flex siblings during the crossfade
+                            could out-grow the 460px card and spill past its edge. */}
+                        <AnimatePresence>
+                          <motion.img
+                            key={`img-${idx}`}
+                            src={active.src}
+                            alt={active.name}
+                            className="absolute inset-0 m-auto object-contain"
+                            style={{ width: 600, height: 600 }}
+                            // The blur is animated via the filter *style* prop, which
+                            // (as an inline style) always wins over the drop-shadow-2xl
+                            // *class* the image had before — both set the same CSS
+                            // `filter` property, and framer-motion fully owns it once
+                            // it touches it, silently deleting the drop-shadow. Folding
+                            // Tailwind's drop-shadow-2xl value into the same filter
+                            // string keeps the shadow present at every frame.
+                            initial={{ opacity: 0, scale: 1.05, filter: "blur(14px) drop-shadow(0 25px 25px rgba(0,0,0,0.15))" }}
+                            animate={{ opacity: 1, scale: 1, filter: "blur(0px) drop-shadow(0 25px 25px rgba(0,0,0,0.15))" }}
+                            exit={{ opacity: 0, scale: 0.96, filter: "blur(10px) drop-shadow(0 25px 25px rgba(0,0,0,0.15))" }}
+                            transition={{ duration: 0.9, ease: EASE_DISSOLVE }}
+                          />
+                        </AnimatePresence>
+                      </motion.div>
                       <div
                         className="absolute blur-2xl opacity-20 rounded-full"
                         style={{
@@ -1061,17 +1293,28 @@ export default function HomePage() {
                           "linear-gradient(to top, rgba(255,255,255,0.96) 60%, transparent)",
                       }}
                     >
+                      <div className="flex items-center gap-1.5 mb-3">
+                        {SHOWCASE.map((item, i) => (
+                          <button
+                            key={item.name}
+                            type="button"
+                            aria-label={`Show ${item.name}`}
+                            onClick={() => selectShowcase(i)}
+                            className="h-1.5 rounded-full transition-all duration-300 cursor-pointer"
+                            style={{
+                              width: i === idx ? 22 : 6,
+                              background: i === idx ? active.accent : "rgba(45,45,45,0.18)",
+                            }}
+                          />
+                        ))}
+                      </div>
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={`info-${idx}`}
-                          initial={{ opacity: 0, y: 14 }}
+                          initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -8 }}
-                          transition={{
-                            type: "spring",
-                            damping: 22,
-                            stiffness: 180,
-                          }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.4, ease: EASE_DISSOLVE }}
                         >
                           <p
                             className="text-xl font-bold text-[#1A1A1A] leading-tight mb-2"
@@ -1083,9 +1326,12 @@ export default function HomePage() {
                             {active.name}
                           </p>
                           <div className="flex gap-1.5 flex-wrap">
-                            {active.feat.map((f) => (
-                              <span
+                            {active.feat.map((f, i) => (
+                              <motion.span
                                 key={f}
+                                initial={{ opacity: 0, y: 6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 0.1 + i * 0.07, ease: EASE_DISSOLVE }}
                                 className="text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wide"
                                 style={{
                                   background: `${active.accent}18`,
@@ -1093,39 +1339,69 @@ export default function HomePage() {
                                 }}
                               >
                                 {f}
-                              </span>
+                              </motion.span>
                             ))}
                           </div>
                         </motion.div>
                       </AnimatePresence>
                     </div>
-                  </div>
+
+                    {/* Glare follows the cursor for a "light on glass" read that
+                        sells the 3D tilt above — pointer-events-none so it never
+                        intercepts the dot/button clicks beneath it. */}
+                    <motion.div
+                      className="absolute inset-0 z-40 pointer-events-none"
+                      style={{
+                        opacity: showcaseGlareOpacity,
+                        background: showcaseGlareBackground,
+                      }}
+                    />
+                  </motion.div>
 
                   <motion.div
                     initial={{ opacity: 0, x: -24 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 1.0, type: "spring", damping: 20 }}
-                    className="absolute -left-16 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-3.5 z-30"
+                    className="absolute -left-16 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_20px_50px_rgba(45,45,45,0.12)] p-3.5 z-30"
                     style={{ minWidth: 172 }}
                   >
                     <div className="flex items-center gap-2.5 mb-2.5">
                       <div className="w-9 h-9 rounded-lg bg-[#F7F6F2] border border-gray-200 p-0.5 shrink-0">
                         <img
-                          src="/Ara_Weather_Coat.png"
+                          src="/Logo.png"
                           alt="logo"
                           className="w-full h-full object-contain"
                         />
                       </div>
                       <div>
-                        <p
-                          className="text-xs font-bold text-[#1A1A1A]"
-                          style={{ fontFamily: "var(--font-inter)" }}
-                        >
-                          Colorsome Luxe
-                        </p>
-                        <p className="text-[10px] text-gray-400 font-medium">
-                          Interior Matte
-                        </p>
+                        {/* Was hardcoded to "Colorsome Luxe / Interior Matte"
+                            regardless of which of the 6 showcase products was
+                            actually displayed — now tracks the active one. */}
+                        <AnimatePresence mode="wait">
+                          <motion.p
+                            key={`badge-name-${idx}`}
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -4 }}
+                            transition={{ duration: 0.25 }}
+                            className="text-xs font-bold text-[#1A1A1A]"
+                            style={{ fontFamily: "var(--font-inter)" }}
+                          >
+                            {active.name}
+                          </motion.p>
+                        </AnimatePresence>
+                        <AnimatePresence mode="wait">
+                          <motion.p
+                            key={`badge-cat-${idx}`}
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -4 }}
+                            transition={{ duration: 0.25, delay: 0.03 }}
+                            className="text-[10px] text-gray-400 font-medium"
+                          >
+                            {active.cat}
+                          </motion.p>
+                        </AnimatePresence>
                       </div>
                     </div>
                     <div className="flex gap-1.5">
@@ -1140,6 +1416,7 @@ export default function HomePage() {
                     </div>
                   </motion.div>
                 </motion.div>
+                </>
               );
             })()}
           </div>
@@ -1215,7 +1492,7 @@ export default function HomePage() {
                 <motion.div key={category.id} variants={scaleIn}>
                   <Link
                     href={`/products?category=${category.slug}`}
-                    className="group relative block p-7 lg:p-9 text-center rounded-[1.75rem] bg-warm-gray hover:bg-white transition-all duration-500 border border-transparent hover:border-black/[0.04] overflow-hidden"
+                    className="group relative block p-5 sm:p-6 lg:p-9 text-center rounded-[1.75rem] bg-warm-gray hover:bg-white transition-all duration-500 border border-transparent hover:border-black/[0.04] overflow-hidden"
                     style={{ boxShadow: "0 0 0 rgba(0,0,0,0)" }}
                     onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 24px 60px rgba(0,0,0,0.08)")}
                     onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "0 0 0 rgba(0,0,0,0)")}
@@ -1284,12 +1561,13 @@ export default function HomePage() {
                 </p>
                 <Link
                   href="/about"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm text-white hover:opacity-90 transition-opacity"
+                  className="group relative inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm text-white overflow-hidden hover:scale-[1.02] active:scale-[0.98] transition-transform duration-300"
                   style={{
                     background: `linear-gradient(135deg, ${BRAND.orange}, ${BRAND.yellow})`,
                   }}
                 >
-                  Our Story <ArrowRight className="w-4 h-4" />
+                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%)' }} />
+                  <span className="relative">Our Story</span> <ArrowRight className="w-4 h-4 relative group-hover:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
             </Section>
@@ -1321,8 +1599,21 @@ export default function HomePage() {
       </section>
 
       {/* ── INFINITE PRODUCT SHOWCASE ────────── */}
-      <section className="section-padding bg-warm-gray overflow-hidden">
-        <div className="container-wide mb-8">
+      <section className="relative section-padding bg-warm-gray overflow-hidden">
+        {/* Subtle atmosphere — same fine-grid + soft glow language used on
+            the Calculators/Shades pages, brought here for cohesion. */}
+        <div
+          className="absolute inset-0 opacity-[0.35] pointer-events-none"
+          style={{
+            backgroundImage: `linear-gradient(to right, #EDE6DA 1px, transparent 1px), linear-gradient(to bottom, #EDE6DA 1px, transparent 1px)`,
+            backgroundSize: "32px 32px",
+          }}
+        />
+        <div
+          className="absolute -top-24 left-1/2 w-[720px] h-[360px] rounded-full pointer-events-none blur-[110px] opacity-60"
+          style={{ background: `${BRAND.orange}14`, transform: "translateX(-50%)" }}
+        />
+        <div className="container-wide mb-8 relative z-10">
           <Section>
             <motion.div
               variants={fadeUp}
@@ -1346,7 +1637,7 @@ export default function HomePage() {
         </div>
 
         {marqueeData.length > 0 || products.length > 0 ? (
-          <div className="space-y-5">
+          <RevealOnScroll className="space-y-5 relative z-10">
             <InfiniteMarquee
               products={
                 row1.length > 0
@@ -1367,7 +1658,7 @@ export default function HomePage() {
                 reverse={true}
               />
             )}
-          </div>
+          </RevealOnScroll>
         ) : (
           <div className="text-center py-16 text-charcoal-muted">
             <Droplets className="w-10 h-10 mx-auto mb-3 text-gold opacity-50" />
@@ -1538,6 +1829,13 @@ export default function HomePage() {
             <motion.div variants={fadeUp} className="text-center mb-14">
               <p className="section-label">By Space</p>
               <h2 className="section-title mb-4">Colours for Every Room</h2>
+              <Link
+                href="/colour-visualizer"
+                className="inline-flex items-center gap-1.5 text-sm font-bold hover:opacity-75 transition-opacity"
+                style={{ color: BRAND.orange }}
+              >
+                See any shade on these rooms yourself <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </motion.div>
           </Section>
 
@@ -1559,7 +1857,7 @@ export default function HomePage() {
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-[0.12em] text-white">
+                  <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-[0.12em] text-white bg-white/[0.16] backdrop-blur-md border border-white/25">
                     {s.tag}
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-5">
@@ -1578,7 +1876,7 @@ export default function HomePage() {
       {/* ── BEFORE / AFTER ───────────────────── */}
       <section
         id="before-after"
-        className="py-20 md:py-24 lg:py-28 overflow-hidden relative"
+        className="py-14 sm:py-20 md:py-28 lg:py-28 overflow-hidden relative"
         style={{ background: `linear-gradient(165deg, #241D16 0%, ${BRAND.dark} 55%, #150F0B 100%)` }}
       >
         <div className="container-wide">
@@ -1637,7 +1935,7 @@ export default function HomePage() {
             >
               <div
                 ref={sliderRef}
-                className="relative mx-auto max-w-5xl h-[340px] md:h-[560px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#1f1f1f] shadow-[0_28px_80px_rgba(0,0,0,0.35)] select-none touch-none cursor-col-resize"
+                className="relative mx-auto max-w-5xl h-[260px] sm:h-[340px] md:h-[560px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#1f1f1f] shadow-[0_28px_80px_rgba(0,0,0,0.35)] select-none touch-none cursor-col-resize"
                 onPointerDown={handlePointerDown}
                 onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}
@@ -1759,826 +2057,62 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── PAINT CALCULATOR ─────────────────── */}
-      <section className="section-padding bg-warm-gray" id="paint-calculator">
+      {/* ── CALCULATOR GATEWAY ───────────────────── */}
+      <section className="section-padding bg-warm-gray">
         <div className="container-wide">
-          <Section>
-            <motion.div variants={fadeUp} className="text-center mb-10">
-              <p className="section-label">Estimate</p>
-              <h2 className="section-title mb-3">Painting Cost Calculator</h2>
-              <p className="section-subtitle mx-auto max-w-2xl">
-                Estimate Your Home Painting Cost Instantly - Already have your
-                estimate?{" "}
-                <a
-                  href="#cost-reference"
-                  className="underline text-charcoal font-medium hover:text-gold transition-colors"
-                >
-                  Scroll down for detailed cost breakdowns
-                </a>{" "}
-                by apartment size, city, and paint brand - or call us at{" "}
-                <Link
-                  href="/assistance"
-                  className="font-semibold text-charcoal hover:text-gold transition-colors underline"
-                >
-                  Get Free Estimate
-                </Link>{" "}
-                for a free consultation.
-              </p>
-            </motion.div>
-          </Section>
+          <RevealOnScroll>
+            <div className="max-w-3xl mx-auto text-center rounded-[2rem] bg-white border border-[#EDE6DA] p-10 md:p-14 shadow-[0_20px_50px_rgba(45,45,45,0.06)] relative overflow-hidden">
+              <div
+                className="absolute inset-0 opacity-[0.35] pointer-events-none"
+                style={{
+                  backgroundImage: `linear-gradient(to right, #EDE6DA 1px, transparent 1px), linear-gradient(to bottom, #EDE6DA 1px, transparent 1px)`,
+                  backgroundSize: "28px 28px",
+                }}
+              />
+              <div className="relative z-10">
+                <p className="section-label">Project Planning Tools</p>
+                <h2 className="section-title mb-4">Not Sure How Much Paint You Need?</h2>
+                <p className="section-subtitle mx-auto mb-8">
+                  Four quick tools that turn your room dimensions into a real, itemised estimate &mdash; in under a minute.
+                </p>
 
-          <RevealOnScroll delay={0.2}>
-            <div className="max-w-5xl mx-auto">
-              <div className="rounded-[2rem] overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.08)] border border-gray-100 bg-white">
-                <div
-                  className="h-1.5 w-full"
-                  style={{
-                    background: `linear-gradient(90deg, ${BRAND.pink}, ${BRAND.orange}, ${BRAND.yellow}, ${BRAND.green}, ${BRAND.blue})`,
-                  }}
-                />
-                <div className="p-8 md:p-12">
-                  <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
-                    {/* LEFT — Inputs */}
-                    <div className="space-y-7">
-                      {/* City */}
-                      <div>
-                        <label className="label-premium mb-2 block">
-                          <span
-                            className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-black mr-2"
-                            style={{ background: BRAND.pink }}
-                          >
-                            1
-                          </span>
-                          Where do you live?
-                        </label>
-                        <select
-                          value={calcCity}
-                          onChange={(e) => setCalcCity(e.target.value)}
-                          className="select-premium"
-                        >
-                          <option value="bangalore">Bangalore</option>
-                          <option value="mumbai">Mumbai</option>
-                          <option value="delhi">Delhi / NCR</option>
-                          <option value="hyderabad">Hyderabad</option>
-                          <option value="pune">Pune</option>
-                          <option value="chennai">Chennai</option>
-                          <option value="kolkata">Kolkata</option>
-                          <option value="other">Other City</option>
-                        </select>
-                      </div>
-
-                      {/* Part */}
-                      <div>
-                        <label className="label-premium mb-2 block">
-                          <span
-                            className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-black mr-2"
-                            style={{ background: BRAND.blue }}
-                          >
-                            2
-                          </span>
-                          What part of your house?
-                        </label>
-                        <div className="flex gap-3">
-                          {["Interior", "Exterior", "Both"].map((opt) => (
-                            <button
-                              key={opt}
-                              onClick={() => setCalcPart(opt)}
-                              className={`flex-1 py-3 px-4 rounded-xl border-2 text-sm font-semibold transition-all duration-200 ${calcPart === opt ? "text-white border-transparent" : "bg-warm-gray border-gray-200 text-charcoal-muted hover:border-gray-300"}`}
-                              style={
-                                calcPart === opt
-                                  ? { background: BRAND.blue }
-                                  : {}
-                              }
-                            >
-                              {opt}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* BHK */}
-                      <div>
-                        <label className="label-premium mb-2 block">
-                          <span
-                            className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-black mr-2"
-                            style={{ background: BRAND.green }}
-                          >
-                            3
-                          </span>
-                          Size of your home
-                        </label>
-                        <div className="grid grid-cols-4 gap-2.5 mb-2">
-                          {["1 BHK", "2 BHK", "3 BHK", "4 BHK+"].map((opt) => (
-                            <button
-                              key={opt}
-                              onClick={() => {
-                                setCalcBhk(opt);
-                                setCalcSqft("");
-                              }}
-                              className={`py-3 rounded-xl border-2 text-sm font-semibold transition-all duration-200 ${
-                                calcBhk === opt && !calcSqft
-                                  ? "text-white border-transparent"
-                                  : "bg-warm-gray border-gray-200 text-charcoal-muted hover:border-gray-300"
-                              }`}
-                              style={
-                                calcBhk === opt && !calcSqft
-                                  ? { background: BRAND.green }
-                                  : {}
-                              }
-                            >
-                              {opt}
-                            </button>
-                          ))}
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-2.5 mb-3">
-                          {[
-                            { bhk: "1 BHK", range: "500–650 sq ft" },
-                            { bhk: "2 BHK", range: "800–1,100 sq ft" },
-                            { bhk: "3 BHK", range: "1,200–1,600 sq ft" },
-                            { bhk: "4 BHK+", range: "1,800–2,400 sq ft" },
-                          ].map(({ bhk, range }) => (
-                            <p
-                              key={bhk}
-                              className={`text-center text-[10px] leading-tight transition-colors ${
-                                calcBhk === bhk && !calcSqft
-                                  ? "font-semibold"
-                                  : "text-charcoal-muted"
-                              }`}
-                              style={
-                                calcBhk === bhk && !calcSqft
-                                  ? { color: BRAND.green }
-                                  : {}
-                              }
-                            >
-                              {range}
-                            </p>
-                          ))}
-                        </div>
-
-                        <div className="flex items-center gap-3 my-3">
-                          <div className="flex-1 h-px bg-gray-200" />
-                          <span className="text-[10px] uppercase tracking-widest text-charcoal-muted font-semibold">
-                            or enter exact
-                          </span>
-                          <div className="flex-1 h-px bg-gray-200" />
-                        </div>
-
-                        <div className="relative">
-                          <input
-                            type="number"
-                            value={calcSqft}
-                            onChange={(e) => setCalcSqft(e.target.value)}
-                            placeholder="Enter carpet area (e.g. 1050)"
-                            className="input-premium pr-16 w-full"
-                            min={100}
-                            max={10000}
-                          />
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-charcoal-muted font-semibold pointer-events-none">
-                            sq ft
-                          </span>
-                        </div>
-                        <p className="text-[10px] text-charcoal-muted mt-1.5">
-                          Carpet area × 3.5 = paintable wall area
-                        </p>
-                      </div>
-
-                      {/* Type */}
-                      <div>
-                        <label className="label-premium mb-2 block">
-                          <span
-                            className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-black mr-2"
-                            style={{ background: BRAND.orange }}
-                          >
-                            4
-                          </span>
-                          Type of painting
-                        </label>
-                        <div className="grid grid-cols-3 gap-3">
-                          {[
-                            {
-                              label: "Fresh Painting",
-                              sub: "Painting from scratch",
-                            },
-                            {
-                              label: "Re-Painting",
-                              sub: "Change colour / finish",
-                            },
-                            {
-                              label: "Rental Painting",
-                              sub: "Tenant vacating?",
-                            },
-                          ].map((opt) => (
-                            <button
-                              key={opt.label}
-                              onClick={() => setCalcType(opt.label)}
-                              className={`p-3 rounded-xl border-2 text-left transition-all duration-200 ${calcType === opt.label ? "text-white border-transparent" : "bg-warm-gray border-gray-200 hover:border-gray-300"}`}
-                              style={
-                                calcType === opt.label
-                                  ? { background: BRAND.orange }
-                                  : {}
-                              }
-                            >
-                              <p
-                                className={`text-xs font-bold leading-tight ${calcType === opt.label ? "text-white" : "text-charcoal"}`}
-                              >
-                                {opt.label}
-                              </p>
-                              <p
-                                className={`text-[10px] mt-0.5 leading-tight ${calcType === opt.label ? "text-white/80" : "text-charcoal-muted"}`}
-                              >
-                                {opt.sub}
-                              </p>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={handleCalcAdvanced}
-                        className="btn-primary w-full justify-center"
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 text-left">
+                  {[
+                    { label: "Calculate Paint Quantity", href: "/calculators/paint-quantity", icon: Ruler },
+                    { label: "Estimate Project Cost", href: "/calculators/painting-cost", icon: Wallet },
+                    { label: "Plan Waterproofing", href: "/calculators/waterproofing", icon: Waves },
+                    { label: "Find Product Requirements", href: "/calculators/product-requirement", icon: ClipboardList },
+                  ].map(({ label, href, icon: Icon }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      className="group flex flex-col gap-2.5 p-4 rounded-2xl border border-[#EDE6DA] bg-[#FAF8F5] hover:bg-white hover:border-gold/40 hover:shadow-[0_10px_24px_rgba(45,45,45,0.06)] transition-all duration-300"
+                    >
+                      <span
+                        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105"
+                        style={{ background: `${BRAND.orange}14`, color: BRAND.orange }}
                       >
-                        Get My Estimate{" "}
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </button>
-                    </div>
-
-                    {/* RIGHT — Tier selector */}
-                    <div>
-                      <label className="label-premium mb-4 block">
-                        <span
-                          className="inline-flex items-center justify-center w-5 h-5 rounded-full text-white text-[10px] font-black mr-2"
-                          style={{ background: BRAND.yellow }}
-                        >
-                          5
-                        </span>
-                        How would you describe your preference?
-                      </label>
-                      <div className="space-y-3">
-                        {[
-                          {
-                            key: "economy",
-                            color: "#4CAF50",
-                            darkColor: "#388E3C",
-                            label: "Economy",
-                            sub: "Budget-friendly, doesn't compromise quality",
-                            features: [
-                              "Matt Finish",
-                              "Non-Washable",
-                              "Durability up to 2 yrs",
-                            ],
-                            dotColor: "bg-gray-400",
-                          },
-                          {
-                            key: "premium",
-                            color: "#2196F3",
-                            darkColor: "#1565C0",
-                            label: "Premium",
-                            sub: "Classy and elegant feel for your walls",
-                            features: [
-                              "Matt & Sheen Finish",
-                              "Semi-Washable",
-                              "Durability up to 5 yrs",
-                            ],
-                            dotColor: "bg-blue-400",
-                          },
-                          {
-                            key: "luxury",
-                            color: "#FFC107",
-                            darkColor: "#F57F17",
-                            label: "Luxury",
-                            sub: "Exquisite finish — the envy of your friends",
-                            features: [
-                              "Matt & Sheen Finish",
-                              "Fully-Washable",
-                              "Durability up to 7 yrs",
-                            ],
-                            dotColor: "bg-yellow-400",
-                          },
-                        ].map((tier) => (
-                          <button
-                            key={tier.key}
-                            onClick={() => setCalcTier(tier.key)}
-                            className={`w-full rounded-2xl overflow-hidden border-2 transition-all duration-200 text-left ${calcTier === tier.key ? "border-transparent" : "border-gray-200 hover:border-gray-300"}`}
-                            style={
-                              calcTier === tier.key
-                                ? { borderColor: tier.color }
-                                : {}
-                            }
-                          >
-                            <div
-                              className="px-5 py-3"
-                              style={{
-                                background:
-                                  calcTier === tier.key
-                                    ? tier.darkColor
-                                    : tier.color,
-                              }}
-                            >
-                              <p className="text-white font-black text-sm uppercase tracking-widest">
-                                {tier.label}
-                              </p>
-                              <p className="text-white/80 text-xs mt-0.5">
-                                {tier.sub}
-                              </p>
-                            </div>
-                            <div className="px-5 py-3 bg-white">
-                              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-charcoal-muted">
-                                {tier.features.map((f) => (
-                                  <span
-                                    key={f}
-                                    className="flex items-center gap-1.5"
-                                  >
-                                    <span
-                                      className={`w-1.5 h-1.5 rounded-full ${tier.dotColor}`}
-                                    />
-                                    {f}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Result */}
-                  <AnimatePresence>
-                    {calcAdvancedResult && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 14 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        className="mt-8 rounded-2xl overflow-hidden border"
-                        style={{ borderColor: `${BRAND.orange}30` }}
-                      >
-                        <div
-                          className="h-1"
-                          style={{
-                            background: `linear-gradient(90deg, ${BRAND.pink}, ${BRAND.orange}, ${BRAND.yellow})`,
-                          }}
-                        />
-                        <div
-                          className="p-6 grid sm:grid-cols-3 gap-6"
-                          style={{ background: `${BRAND.orange}08` }}
-                        >
-                          <div className="text-center">
-                            <p className="text-xs uppercase tracking-widest text-charcoal-muted font-semibold mb-1">
-                              Estimated Cost
-                            </p>
-                            <p
-                              className="card-title text-2xl"
-                              style={{ color: BRAND.orange }}
-                            >
-                              {calcAdvancedResult.cost}
-                            </p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-xs uppercase tracking-widest text-charcoal-muted font-semibold mb-1">
-                              Paintable Area
-                            </p>
-                            <p
-                              className="card-title text-2xl"
-                              style={{ color: BRAND.blue }}
-                            >
-                              {calcAdvancedResult.area}
-                            </p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-xs uppercase tracking-widest text-charcoal-muted font-semibold mb-1">
-                              Paint Tier
-                            </p>
-                            <p
-                              className="card-title text-2xl capitalize"
-                              style={{ color: BRAND.green }}
-                            >
-                              {calcAdvancedResult.tier}
-                            </p>
-                          </div>
-                        </div>
-                        <div
-                          className="px-6 py-4 bg-white border-t"
-                          style={{ borderColor: `${BRAND.orange}20` }}
-                        >
-                          <p className="text-xs text-charcoal-muted text-center">
-                            Indicative estimate for {calcAdvancedResult.city} ·{" "}
-                            {calcAdvancedResult.type} · Includes paint, labour,
-                            primer & putty.{" "}
-                            <Link
-                              href="/assistance"
-                              className="font-semibold text-charcoal underline hover:text-gold transition-colors"
-                            >
-                              Book free consultation
-                            </Link>
-                          </p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        <Icon className="w-4 h-4" />
+                      </span>
+                      <span className="text-[12px] sm:text-[13px] font-bold text-charcoal leading-snug">
+                        {label}
+                      </span>
+                    </Link>
+                  ))}
                 </div>
+
+                <Link
+                  href="/calculators"
+                  className="group relative inline-flex items-center gap-2.5 px-8 py-4 rounded-xl text-xs uppercase tracking-widest font-black text-white overflow-hidden shadow-[0_12px_30px_rgba(0,0,0,0.18)] hover:scale-[1.02] active:scale-[0.98] transition-transform duration-300"
+                  style={{ background: `linear-gradient(135deg, ${BRAND.pink}, ${BRAND.orange})` }}
+                >
+                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%)' }} />
+                  <span className="relative">Calculate Your Project</span>
+                  <ArrowRight className="w-4 h-4 relative group-hover:translate-x-1 transition-transform" />
+                </Link>
               </div>
             </div>
           </RevealOnScroll>
-
-          {/* Cost reference tables */}
-          <div id="cost-reference" className="mt-16 space-y-12">
-            <Section>
-              <motion.div variants={fadeUp}>
-                <h3 className="section-title mb-2">
-                  Painting Cost by BHK ~ India 2026
-                </h3>
-                <p className="section-subtitle mb-2">
-                  Includes surface prep, primer, putty, 2 coats of paint,
-                  labour & furniture covering.{" "}
-                  <span className="font-semibold text-charcoal">
-                    Carpet area × 3.5 = paintable wall area.
-                  </span>
-                </p>
-                <div className="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm mt-5">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr style={{ background: BRAND.dark }}>
-                        {[
-                          "Home Size",
-                          "Carpet Area",
-                          "Economy",
-                          "Premium",
-                          "Luxury",
-                        ].map((h, i) => (
-                          <th
-                            key={h}
-                            className="px-5 py-4 text-left text-xs uppercase tracking-wider font-semibold"
-                            style={{
-                              color:
-                                i === 0 || i === 1
-                                  ? "rgba(255,255,255,0.6)"
-                                  : i === 2
-                                    ? BRAND.green
-                                    : i === 3
-                                      ? BRAND.blue
-                                      : BRAND.yellow,
-                            }}
-                          >
-                            {h}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[
-                        [
-                          "1 RK",
-                          "250–400 sq ft",
-                          "₹8,000–₹15,000",
-                          "₹15,000–₹25,000",
-                          "₹25,000–₹40,000",
-                        ],
-                        [
-                          "1 BHK",
-                          "500–650 sq ft",
-                          "₹18,000–₹25,000",
-                          "₹30,000–₹40,000",
-                          "₹50,000–₹70,000",
-                        ],
-                        [
-                          "2 BHK",
-                          "800–1,100 sq ft",
-                          "₹25,000–₹38,000",
-                          "₹45,000–₹60,000",
-                          "₹80,000–₹1,10,000",
-                        ],
-                        [
-                          "3 BHK",
-                          "1,200–1,600 sq ft",
-                          "₹38,000–₹55,000",
-                          "₹65,000–₹85,000",
-                          "₹1,12,000–₹1,50,000",
-                        ],
-                        [
-                          "4 BHK",
-                          "1,800–2,400 sq ft",
-                          "₹55,000–₹75,000",
-                          "₹90,000–₹1,20,000",
-                          "₹1,50,000–₹2,20,000",
-                        ],
-                        [
-                          "Villa",
-                          "2,500–4,000+ sq ft",
-                          "₹80,000–₹1,20,000",
-                          "₹1,50,000–₹2,50,000",
-                          "₹2,50,000–₹4,50,000",
-                        ],
-                      ].map(([size, area, eco, prem, lux], i) => (
-                        <tr
-                          key={i}
-                          className={
-                            i % 2 === 0 ? "bg-white" : "bg-warm-gray/50"
-                          }
-                        >
-                          <td className="px-5 py-3.5 font-semibold text-charcoal">
-                            {size}
-                          </td>
-                          <td className="px-5 py-3.5 text-charcoal-muted">
-                            {area}
-                          </td>
-                          <td
-                            className="px-5 py-3.5 font-medium"
-                            style={{ color: BRAND.green }}
-                          >
-                            {eco}
-                          </td>
-                          <td
-                            className="px-5 py-3.5 font-medium"
-                            style={{ color: BRAND.blue }}
-                          >
-                            {prem}
-                          </td>
-                          <td
-                            className="px-5 py-3.5 font-medium"
-                            style={{ color: BRAND.yellow }}
-                          >
-                            {lux}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <p className="text-xs text-charcoal-muted mt-3">
-                  Economy = Tractor Emulsion / Ace · Premium = Apcolite /
-                  Apex / Berger Silk · Luxury = Royale / Royale Aspira /
-                  Dulux Velvet Touch. Metro city rates. Tier-2 cities 10–15%
-                  lower. Exterior painting costs 15–25% more.
-                </p>
-              </motion.div>
-            </Section>
-
-            <Section>
-              <motion.div variants={fadeUp}>
-                <h3 className="section-title mb-2">
-                  Interior Paint Cost Per Sq Ft ~ 2026
-                </h3>
-                <div className="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm mt-5">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr style={{ background: BRAND.dark }}>
-                        {[
-                          "Category",
-                          "Example Products",
-                          "Material Only",
-                          "With Labour",
-                          "Durability",
-                        ].map((h) => (
-                          <th
-                            key={h}
-                            className="px-5 py-4 text-left text-white/60 text-xs uppercase tracking-wider font-semibold"
-                          >
-                            {h}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[
-                        [
-                          "Distemper",
-                          "Tractor Uno, Snowcem",
-                          "₹3–5/sq ft",
-                          "₹8–12/sq ft",
-                          "1–2 yrs",
-                        ],
-                        [
-                          "Economy Emulsion",
-                          "Tractor Emulsion, Ace",
-                          "₹4–7/sq ft",
-                          "₹12–18/sq ft",
-                          "2–3 yrs",
-                        ],
-                        [
-                          "Premium Emulsion",
-                          "Apcolite, Apex, Berger Silk",
-                          "₹7–12/sq ft",
-                          "₹18–28/sq ft",
-                          "4–5 yrs",
-                        ],
-                        [
-                          "Luxury Emulsion",
-                          "Royale Shyne, Dulux Velvet Touch",
-                          "₹12–20/sq ft",
-                          "₹28–45/sq ft",
-                          "6–8 yrs",
-                        ],
-                        [
-                          "Texture / Decorative",
-                          "Royale Play, Stucco",
-                          "₹25–80/sq ft",
-                          "₹45–150/sq ft",
-                          "8–12 yrs",
-                        ],
-                        [
-                          "Waterproofing",
-                          "Damp Bloc, SmartCare",
-                          "₹15–30/sq ft",
-                          "₹30–80/sq ft",
-                          "5–7 yrs",
-                        ],
-                      ].map(([cat, prod, mat, lab, dur], i) => (
-                        <tr
-                          key={i}
-                          className={
-                            i % 2 === 0 ? "bg-white" : "bg-warm-gray/50"
-                          }
-                        >
-                          <td className="px-5 py-3.5 font-semibold text-charcoal">
-                            {cat}
-                          </td>
-                          <td className="px-5 py-3.5 text-charcoal-muted text-xs">
-                            {prod}
-                          </td>
-                          <td className="px-5 py-3.5 font-medium text-charcoal">
-                            {mat}
-                          </td>
-                          <td
-                            className="px-5 py-3.5 font-medium"
-                            style={{ color: BRAND.orange }}
-                          >
-                            {lab}
-                          </td>
-                          <td className="px-5 py-3.5 text-charcoal-muted">
-                            {dur}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </motion.div>
-            </Section>
-
-            <Section>
-              <motion.div variants={fadeUp}>
-                <h3 className="section-title mb-2">
-                  Labour Cost Per Sq Ft ~ City-Wise 2026
-                </h3>
-                <div className="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm mt-5">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr style={{ background: BRAND.dark }}>
-                        {[
-                          "City",
-                          "Economy",
-                          "Premium",
-                          "Luxury",
-                          "Notes",
-                        ].map((h) => (
-                          <th
-                            key={h}
-                            className="px-5 py-4 text-left text-white/60 text-xs uppercase tracking-wider font-semibold"
-                          >
-                            {h}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[
-                        [
-                          "Bangalore",
-                          "₹6–10",
-                          "₹15–25",
-                          "₹28–45",
-                          "Higher in Whitefield, HSR, Indiranagar",
-                        ],
-                        [
-                          "Mumbai",
-                          "₹8–12",
-                          "₹18–30",
-                          "₹32–50",
-                          "Highest in India. Navi Mumbai slightly lower",
-                        ],
-                        [
-                          "Delhi / NCR",
-                          "₹6–10",
-                          "₹14–24",
-                          "₹26–42",
-                          "South Delhi premium. Dwarka more affordable",
-                        ],
-                        [
-                          "Hyderabad",
-                          "₹5–9",
-                          "₹13–22",
-                          "₹24–40",
-                          "Gachibowli / HITEC City at upper end",
-                        ],
-                        [
-                          "Pune",
-                          "₹6–10",
-                          "₹15–24",
-                          "₹26–42",
-                          "Similar to Bangalore rates",
-                        ],
-                        [
-                          "Chennai",
-                          "₹5–8",
-                          "₹12–20",
-                          "₹22–38",
-                          "Lower labour, similar material cost",
-                        ],
-                        [
-                          "Kolkata",
-                          "₹4–7",
-                          "₹10–18",
-                          "₹20–35",
-                          "Most affordable metro",
-                        ],
-                        [
-                          "Ahmedabad",
-                          "₹5–8",
-                          "₹12–20",
-                          "₹22–36",
-                          "Growing market, rates increasing",
-                        ],
-                      ].map(([city, eco, prem, lux, note], i) => (
-                        <tr
-                          key={i}
-                          className={
-                            i % 2 === 0 ? "bg-white" : "bg-warm-gray/50"
-                          }
-                        >
-                          <td className="px-5 py-3.5 font-semibold text-charcoal">
-                            {city}
-                          </td>
-                          <td
-                            className="px-5 py-3.5 font-medium"
-                            style={{ color: BRAND.green }}
-                          >
-                            {eco}
-                          </td>
-                          <td
-                            className="px-5 py-3.5 font-medium"
-                            style={{ color: BRAND.blue }}
-                          >
-                            {prem}
-                          </td>
-                          <td
-                            className="px-5 py-3.5 font-medium"
-                            style={{ color: BRAND.yellow }}
-                          >
-                            {lux}
-                          </td>
-                          <td className="px-5 py-3.5 text-xs text-charcoal-muted">
-                            {note}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <p className="text-xs text-charcoal-muted mt-3">
-                  Ceiling painting adds ₹2–4/sq ft. Exterior with
-                  scaffolding adds ₹5–10/sq ft.
-                </p>
-              </motion.div>
-            </Section>
-
-            {/* CTA Banner */}
-            <RevealOnScroll delay={0.3}>
-              <div
-                className="rounded-2xl p-8 text-center text-white relative overflow-hidden"
-                style={{
-                  background: `linear-gradient(135deg, ${BRAND.dark}, #3a3a3a)`,
-                }}
-              >
-                <div
-                  className="absolute inset-0 opacity-10 pointer-events-none"
-                  style={{
-                    background: `radial-gradient(ellipse at 30% 50%, ${BRAND.pink}, transparent 60%), radial-gradient(ellipse at 80% 50%, ${BRAND.blue}, transparent 60%)`,
-                  }}
-                />
-                <p className="text-white/60 text-xs uppercase tracking-widest font-semibold mb-2 relative z-10">
-                  Get An Accurate Quote
-                </p>
-                <h4 className="card-title-light mb-3 relative z-10">
-                  Skip the Math — Talk to an Expert
-                </h4>
-                <p className="text-white/70 text-sm mb-6 max-w-md mx-auto relative z-10">
-                  Book a free site visit. We measure your space, recommend the
-                  right product, and give you a transparent quote.
-                </p>
-                <Link
-                  href="/assistance"
-                  className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-sm text-white shadow-lg hover:opacity-90 transition-opacity relative z-10"
-                  style={{
-                    background: `linear-gradient(135deg, ${BRAND.pink}, ${BRAND.orange})`,
-                  }}
-                >
-                  <Phone className="w-4 h-4" />
-                  Book Free Consultation
-                </Link>
-              </div>
-            </RevealOnScroll>
-          </div>
         </div>
       </section>
 
@@ -2602,7 +2136,7 @@ export default function HomePage() {
               className="hidden md:block absolute top-[9px] left-[10%] right-[10%] h-[2px] rounded-full"
               style={{ background: `linear-gradient(90deg, ${processSteps.map((s) => s.color).join(", ")})`, opacity: 0.35 }}
             />
-            <Section className="relative grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8">
+            <Section className="relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 md:gap-8">
               {processSteps.map((step) => (
                 <motion.div
                   key={step.num}
@@ -2635,7 +2169,7 @@ export default function HomePage() {
       </section>
 
       {/* ── SERVICE HIGHLIGHTS ───────────────── */}
-      <section className="py-16 bg-warm-gray">
+      <section className="section-padding bg-warm-gray">
         <div className="container-wide">
           <Section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {serviceHighlights.map((h, i) => (
@@ -2919,7 +2453,7 @@ export default function HomePage() {
       {/* ── STATS ────────────────────────────── */}
       <section
         id="stats-section"
-        className="py-20 relative overflow-hidden"
+        className="section-padding relative overflow-hidden"
         style={{ background: `linear-gradient(165deg, #241D16 0%, ${BRAND.dark} 55%, #150F0B 100%)` }}
       >
         {ACCENTS.slice(0, 4).map((c, i) => (
@@ -2976,7 +2510,7 @@ export default function HomePage() {
 
               <button
                 onClick={() => setShowConsultationPopup(false)}
-                className="absolute top-5 right-5 w-10 h-10 rounded-xl bg-white border border-[#EDE6DA] flex items-center justify-center text-[#5A5A5A] hover:text-black hover:bg-[#FAF8F5] transition-all z-10 shadow-sm"
+                className="absolute top-4 right-4 sm:top-5 sm:right-5 w-11 h-11 sm:w-10 sm:h-10 rounded-xl bg-white border border-[#EDE6DA] flex items-center justify-center text-[#5A5A5A] hover:text-black hover:bg-[#FAF8F5] transition-all z-10 shadow-sm"
                 aria-label="Close consultation popup"
               >
                 <X className="w-4 h-4" />
@@ -3005,7 +2539,7 @@ export default function HomePage() {
                     className="w-[62px] h-[62px] rounded-2xl flex items-center justify-center bg-white shadow-[0_12px_30px_rgba(0,0,0,0.06)] border border-[#EDE6DA] p-1.5"
                   >
                     <img
-                      src="/Ara_Weather_Coat.png"
+                      src="/Logo.png"
                       alt="Colorsome Core Symbol"
                       className="w-full h-full object-contain scale-105"
                     />
@@ -3050,7 +2584,7 @@ export default function HomePage() {
                     <Link
                       href="/assistance"
                       onClick={() => setShowConsultationPopup(false)}
-                      className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 text-white rounded-xl text-xs uppercase tracking-widest font-black font-inter whitespace-nowrap shadow-md hover:shadow-xl hover:shadow-orange-500/20 transition-all duration-300"
+                      className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 text-white rounded-xl text-xs uppercase tracking-widest font-black font-inter whitespace-normal sm:whitespace-nowrap text-center shadow-[0_10px_30px_rgba(196,112,75,0.18)] hover:shadow-[0_16px_40px_rgba(196,112,75,0.3)] transition-all duration-300"
                       style={{
                         background: `linear-gradient(135deg, ${BRAND.pink} 0%, ${BRAND.orange} 100%)`,
                       }}
@@ -3068,7 +2602,7 @@ export default function HomePage() {
                     <Link
                       href="/products"
                       onClick={() => setShowConsultationPopup(false)}
-                      className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-white/90 border border-[#EDE6DA] text-charcoal rounded-xl text-xs uppercase tracking-widest font-black font-inter whitespace-nowrap shadow-sm hover:bg-white hover:border-charcoal/30 hover:shadow-md transition-all duration-300"
+                      className="group w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-white/90 border border-[#EDE6DA] text-charcoal rounded-xl text-xs uppercase tracking-widest font-black font-inter whitespace-normal sm:whitespace-nowrap text-center shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:bg-white hover:border-charcoal/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-all duration-300"
                     >
                       Examine Catalog Matrix{" "}
                       <ArrowRight className="w-3.5 h-3.5 ml-1 transition-transform group-hover:translate-x-0.5" />

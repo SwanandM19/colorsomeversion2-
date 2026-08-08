@@ -169,7 +169,7 @@
 //     <Link href="/" className="flex items-center gap-4 flex-shrink-0 min-w-[260px]">
 //       <div className="w-[62px] h-[62px] rounded-2xl flex items-center justify-center bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-[#E8E2D8] p-2 shrink-0">
 //         <Image
-//           src="/Ara_Weather_Coat.png"
+//           src="/AraWeather.png"
 //           alt="Colorsome logo"
 //           width={62}
 //           height={62}
@@ -575,9 +575,10 @@
 
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { Suspense, useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Phone,
@@ -594,8 +595,6 @@ import {
   Palette,
   ClipboardCheck,
   FileText,
-  Menu,
-  X,
   User,
   MapPin,
 } from 'lucide-react';
@@ -636,14 +635,52 @@ const areaSizes = ['Below 500 sq ft', '500 - 1000 sq ft', '1000 - 2000 sq ft', '
 const finishPreferences = ['Matte', 'Silk / Satin', 'Gloss', 'Textured', 'Not sure — need guidance'];
 const timelines = ['Within 1 week', '1-2 weeks', '2-4 weeks', 'Within a month', 'Just exploring'];
 
-export default function AssistancePage() {
+function AssistancePageContent() {
   // Create a scroll anchor ref for the form container
   const formRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
 
   const [formData, setFormData] = useState({
     name: '', phone: '', email: '', city: '', property_type: '',
     interior_exterior: '', area_size: '', preferred_finish: '', timeline: '', notes: '',
   });
+
+  // Prefill from a calculator handoff (e.g. /assistance?area=1200&product=Interior%20Emulsion&source=paint-quantity-calculator)
+  // so the customer doesn't have to re-enter what they already told the calculator.
+  useEffect(() => {
+    const source = searchParams.get('source');
+    if (!source) return;
+
+    const areaNum = parseFloat(searchParams.get('area') ?? '');
+    const bucketForArea = (a: number) => {
+      if (a < 500) return 'Below 500 sq ft';
+      if (a < 1000) return '500 - 1000 sq ft';
+      if (a < 2000) return '1000 - 2000 sq ft';
+      if (a < 3000) return '2000 - 3000 sq ft';
+      return 'Above 3000 sq ft';
+    };
+
+    const surfaceParam = (searchParams.get('surface') ?? '').toLowerCase();
+    const projectParam = searchParams.get('project');
+    const interiorExterior =
+      surfaceParam === 'interior' ? 'Interior' : surfaceParam === 'exterior' ? 'Exterior' : '';
+
+    const summaryParts: string[] = [`Sent from ${source.replace(/-/g, ' ')}.`];
+    if (searchParams.get('product')) summaryParts.push(`Product: ${searchParams.get('product')}.`);
+    if (searchParams.get('qty')) summaryParts.push(`Estimated requirement: ${searchParams.get('qty')}.`);
+    if (searchParams.get('condition')) summaryParts.push(`Condition: ${searchParams.get('condition')}.`);
+    if (projectParam) summaryParts.push(`Project type: ${projectParam === 'fresh' ? 'Fresh painting' : 'Re-painting'}.`);
+
+    setFormData((prev) => ({
+      ...prev,
+      area_size: Number.isFinite(areaNum) && areaNum > 0 ? bucketForArea(areaNum) : prev.area_size,
+      interior_exterior: interiorExterior || prev.interior_exterior,
+      notes: prev.notes ? prev.notes : summaryParts.join(' '),
+    }));
+    // Scroll straight to the form since the visitor already has intent.
+    setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 400);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [referenceId, setReferenceId] = useState<string | null>(null);
@@ -842,10 +879,11 @@ export default function AssistancePage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto font-inter mb-6">
-              <Link href="/products" className="w-full sm:flex-1 inline-flex items-center justify-center px-6 py-4 text-white rounded-xl text-xs uppercase tracking-widest font-black whitespace-nowrap shadow-md hover:shadow-xl transition-all duration-300" style={{ background: `linear-gradient(135deg, ${BRAND.pink} 0%, ${BRAND.orange} 100%)` }}>
-                Browse Products
+              <Link href="/products" className="group relative overflow-hidden w-full sm:flex-1 inline-flex items-center justify-center px-6 py-4 text-white rounded-xl text-xs uppercase tracking-widest font-black whitespace-nowrap shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300" style={{ background: `linear-gradient(135deg, ${BRAND.pink} 0%, ${BRAND.orange} 100%)` }}>
+                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%)' }} />
+                <span className="relative">Browse Products</span>
               </Link>
-              <Link href="/" className="w-full sm:flex-1 inline-flex items-center justify-center px-6 py-4 bg-white border border-[#EDE6DA] text-charcoal rounded-xl text-xs uppercase tracking-widest font-black whitespace-nowrap shadow-sm hover:bg-[#FDFBF7] transition-all duration-300">
+              <Link href="/" className="w-full sm:flex-1 inline-flex items-center justify-center px-6 py-4 bg-white border border-[#EDE6DA] text-charcoal rounded-xl text-xs uppercase tracking-widest font-black whitespace-nowrap shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:bg-[#FDFBF7] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
                 Back to Home
               </Link>
             </div>
@@ -871,7 +909,7 @@ export default function AssistancePage() {
       <Header />
 
       {/* HERO SECTION */}
-      <section className="py-20 bg-white/40 backdrop-blur-sm border-b border-[#EDE6DA]/50 relative overflow-hidden">
+      <section className="py-12 sm:py-16 md:py-20 bg-white/40 backdrop-blur-sm border-b border-[#EDE6DA]/50 relative overflow-hidden">
         {/* Subtle CSS Micro-Grid Architectural Canvas Blueprint Layer */}
         <div
           className="absolute inset-0 opacity-[0.45] pointer-events-none"
@@ -889,7 +927,7 @@ export default function AssistancePage() {
               <p className="inline-block px-3 py-1 mb-4 rounded-full bg-[#F3E7C9] text-charcoal text-[10px] uppercase tracking-[0.2em] font-black font-inter">
                 Expert Assistance
               </p>
-              <h1 className="font-serif text-5xl md:text-6xl font-bold text-charcoal mb-6 leading-none tracking-tight">
+              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-charcoal mb-6 leading-[1.05] sm:leading-none tracking-tight">
                 Let Us Help You<br />
                 <span className="bg-gradient-to-r from-[#8C6478] to-[#C4704B] bg-clip-text text-transparent">Transform Your Space</span>
               </h1>
@@ -900,12 +938,13 @@ export default function AssistancePage() {
               </p>
 
               {/* Added a prompt call to action right inside the intro content */}
-              <button 
+              <button
                 onClick={() => scrollToForm()}
-                className="inline-flex items-center justify-center gap-2 mb-8 px-6 py-4 text-white rounded-xl text-xs uppercase tracking-widest font-black font-inter shadow-md hover:shadow-xl transition-all duration-300"
+                className="group relative overflow-hidden inline-flex items-center justify-center gap-2 mb-8 px-6 py-4 text-white rounded-xl text-xs uppercase tracking-widest font-black font-inter shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                 style={{ background: `linear-gradient(135deg, ${BRAND.pink} 0%, ${BRAND.orange} 100%)` }}
               >
-                Go Straight To Form <ArrowRight className="w-3.5 h-3.5 animate-pulse" />
+                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%)' }} />
+                <span className="relative">Go Straight To Form</span> <ArrowRight className="w-3.5 h-3.5 relative animate-pulse" />
               </button>
 
               <div className="flex flex-col sm:flex-row gap-6 font-inter border-t border-[#EDE6DA]/40 pt-6">
@@ -930,11 +969,14 @@ export default function AssistancePage() {
               </div>
             </div>
 
-            <div className="relative hidden lg:block">
+            <div className="relative mt-10 lg:mt-0">
               <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
                 whileHover={{ y: -6 }}
-                transition={{ duration: 0.4 }}
-                className="relative rounded-2xl shadow-2xl border border-white/60 overflow-hidden w-full h-[400px]"
+                className="relative rounded-2xl shadow-[0_20px_50px_rgba(45,45,45,0.1)] border border-white/60 overflow-hidden w-full h-[260px] sm:h-[320px] lg:h-[400px]"
               >
                 <Image
                   // src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800"
@@ -966,18 +1008,28 @@ export default function AssistancePage() {
       </section>
 
       {/* SERVICE PROCESS */}
-      <section className="py-20 bg-[#FDFBF7]/40 relative">
+      <section className="py-12 sm:py-16 md:py-20 bg-[#FDFBF7]/40 relative">
         <div className="max-w-[1280px] mx-auto px-6">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <p className="text-[10px] uppercase tracking-[0.25em] text-[#C4704B] font-black font-inter mb-2">Process</p>
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-charcoal">Our Service Journey</h2>
-          </div>
+          </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {serviceProcess.map((step, i) => (
               <div key={step.title} className="relative group cursor-pointer" onClick={() => scrollToForm()}>
-                <motion.div 
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
                   whileHover={{ y: -4, scale: 1.02 }}
-                  className="bg-white/80 backdrop-blur-sm border border-[#EDE6DA]/60 rounded-2xl p-6 text-center h-full shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-xl hover:bg-white hover:border-[#C4704B]/30 transition-all duration-300"
+                  className="bg-white/80 backdrop-blur-sm border border-[#EDE6DA]/60 rounded-2xl p-6 text-center h-full shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(45,45,45,0.1)] hover:bg-white hover:border-[#C4704B]/30 transition-all duration-300"
                 >
                   <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-[#FDFBF7] border border-[#EDE6DA] flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-300">
                     <step.icon className="w-6 h-6 text-[#C4704B]" />
@@ -1141,7 +1193,7 @@ export default function AssistancePage() {
                   whileTap={{ scale: 0.99 }}
                   type="submit"
                   disabled={isSubmitting}
-                  className="group relative overflow-hidden w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-white rounded-xl text-xs uppercase tracking-widest font-black whitespace-nowrap shadow-md hover:shadow-xl hover:shadow-[#C4704B]/10 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="group relative overflow-hidden w-full inline-flex items-center justify-center gap-2 px-6 py-4 text-white rounded-xl text-xs uppercase tracking-widest font-black whitespace-nowrap shadow-[0_10px_30px_rgba(196,112,75,0.18)] hover:shadow-[0_16px_40px_rgba(196,112,75,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ background: `linear-gradient(135deg, ${BRAND.pink} 0%, ${BRAND.orange} 100%)` }}
                 >
                   <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%)' }} />
@@ -1157,7 +1209,7 @@ export default function AssistancePage() {
 
           {/* Sidebar Modules Panel */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white/80 backdrop-blur-md border border-[#EDE6DA]/60 shadow-md rounded-2xl p-6">
+            <div className="bg-white/80 backdrop-blur-md border border-[#EDE6DA]/60 shadow-[0_4px_20px_rgba(0,0,0,0.03)] rounded-2xl p-6">
               <h3 className="font-serif text-xl font-bold text-charcoal mb-5">Why Book with Us</h3>
               <div className="space-y-5">
                 {trustPoints.map((p) => (
@@ -1174,17 +1226,17 @@ export default function AssistancePage() {
               </div>
             </div>
 
-            <div className="bg-white/80 backdrop-blur-md border border-[#EDE6DA]/60 shadow-md rounded-2xl p-6 text-center relative overflow-hidden group">
+            <div className="bg-white/80 backdrop-blur-md border border-[#EDE6DA]/60 shadow-[0_4px_20px_rgba(0,0,0,0.03)] rounded-2xl p-6 text-center relative overflow-hidden group">
               <div className="absolute -bottom-[20%] -right-[20%] w-32 h-32 rounded-full blur-2xl opacity-40 pointer-events-none" style={{ background: BRAND.orange }} />
               
               <h3 className="font-serif text-xl font-bold text-charcoal mb-2">Need Immediate Help?</h3>
               <p className="text-xs text-charcoal-muted mb-5 font-inter">Call us directly for urgent requirements</p>
-              <a href="tel:+91-75020-00079" className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-white border border-[#EDE6DA] text-charcoal rounded-xl text-xs uppercase tracking-widest font-black font-inter shadow-sm hover:border-charcoal/30 hover:shadow-md transition-all duration-300">
+              <a href="tel:+91-75020-00079" className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-white border border-[#EDE6DA] text-charcoal rounded-xl text-xs uppercase tracking-widest font-black font-inter shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:border-charcoal/30 hover:shadow-[0_10px_25px_rgba(0,0,0,0.08)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
                 <Phone className="w-3.5 h-3.5 text-[#C4704B] animate-pulse" /> Call +91-75020-00079
               </a>
             </div>
 
-            <div className="relative rounded-2xl shadow-lg overflow-hidden border border-[#EDE6DA]/50">
+            <div className="relative rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.08)] overflow-hidden border border-[#EDE6DA]/50">
               <img
                 src="/Assistance2.png"
                 alt="Beautifully painted space"
@@ -1196,25 +1248,35 @@ export default function AssistancePage() {
       </section>
 
       {/* FAQ ACCORDION FRAMEWORK */}
-      <section className="relative py-24 bg-white/40 backdrop-blur-sm border-t border-[#EDE6DA]/50 mt-16 overflow-hidden">
+      <section className="relative py-14 sm:py-20 md:py-24 bg-white/40 backdrop-blur-sm border-t border-[#EDE6DA]/50 mt-10 sm:mt-16 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full blur-[130px] opacity-[0.07] pointer-events-none" style={{ background: BRAND.pink }} />
         <div className="max-w-4xl mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <div className="inline-flex items-center gap-2 mb-3">
               <span className="w-3 h-[1.5px]" style={{ background: '#8C6478' }} />
               <p className="text-[11px] uppercase tracking-[0.25em] text-[#8C6478] font-black font-inter">FAQ</p>
               <span className="w-3 h-[1.5px]" style={{ background: '#8C6478' }} />
             </div>
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-charcoal tracking-tight">Common Questions</h2>
-          </div>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-charcoal tracking-tight">Common Questions</h2>
+          </motion.div>
 
           <div className="space-y-4 font-inter">
             {faqs.map((faq, i) => {
               const isOpen = openFaq === i;
               const color = ['#C9A858', '#C4704B', '#8B9E7E', '#2C3E50', '#8C6478'][i % 5];
               return (
-                <div
+                <motion.div
                   key={i}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.4, delay: Math.min(i, 6) * 0.05 }}
                   className="bg-white/90 border rounded-2xl overflow-hidden shadow-[0_4px_25px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)]"
                   style={{ borderColor: isOpen ? `${color}45` : 'rgba(237,230,218,0.7)' }}
                 >
@@ -1248,14 +1310,14 @@ export default function AssistancePage() {
                           animate={{ y: 0, opacity: 1 }}
                           exit={{ y: -8, opacity: 0 }}
                           transition={{ duration: 0.21, ease: 'easeOut' }}
-                          className="pl-[4.25rem] pr-6 sm:pl-24 sm:pr-8 pb-6 pt-1 text-charcoal/80 text-sm sm:text-[15px] leading-relaxed border-t border-gray-100 bg-[#FDFBF7]/50"
+                          className="pl-[4.5rem] pr-6 sm:pl-24 sm:pr-8 pb-6 pt-1 text-charcoal/80 text-sm sm:text-[15px] leading-relaxed border-t border-gray-100 bg-[#FDFBF7]/50"
                         >
                           {faq.a}
                         </motion.div>
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -1264,6 +1326,14 @@ export default function AssistancePage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function AssistancePage() {
+  return (
+    <Suspense fallback={null}>
+      <AssistancePageContent />
+    </Suspense>
   );
 }
 

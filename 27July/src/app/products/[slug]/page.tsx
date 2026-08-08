@@ -133,7 +133,7 @@
 // function SpecRow({ label, value, accent }: { label: string; value?: string; accent: string }) {
 //   if (!value) return null
 //   return (
-//     <div className="flex items-start gap-4 py-3 border-b border-EDE6DA last:border-0">
+//     <div className="flex items-start gap-4 py-3 border-b border-[#EDE6DA] last:border-0">
 //       <span
 //         className="text-9px uppercase tracking-widest font-black w-28 shrink-0 pt-0.5"
 //         style={{ color: '#9B8E7E', fontFamily: 'var(--font-inter)' }}
@@ -204,8 +204,8 @@
 
 //   if (!product) {
 //     return (
-//       <div className="min-h-screen flex flex-col items-center justify-center bg-FAF8F5 pt-[120px]">
-//         <div className="text-center max-w-md bg-white border border-EDE7DC p-10 rounded-2rem shadow-sm">
+//       <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F5] pt-[120px]">
+//         <div className="text-center max-w-md bg-white border border-[#EDE7DC] p-10 rounded-2rem shadow-sm">
 //           <Paintbrush className="w-10 h-10 text-gold mx-auto mb-4 animate-pulse" />
 //           <h1 className="font-serif text-2xl font-bold text-charcoal mb-2" style={{ fontFamily: 'var(--font-cormorant)' }}>
 //             Product Not Found
@@ -223,8 +223,8 @@
 
 //   const related = products.filter(p => p.category === product.category && p.slug !== slug).slice(0, 4)
 //   const navBg = scrolled
-//     ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-F0EAE1'
-//     : 'bg-white/95 backdrop-blur-md border-b border-F0EAE1'
+//     ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-[#F0EAE1]'
+//     : 'bg-white/95 backdrop-blur-md border-b border-[#F0EAE1]'
 
 //   // ─── Category-Specific Application Steps Fallbacks ─────────────────
 //   const CATEGORY_HOW_TO_MAP: Record<string, { step: string; title: string; desc: string }[]> = {
@@ -295,7 +295,7 @@
 //   ]
 
 //   return (
-//     <div className="bg-FAF8F5 min-h-screen selection:bg-F3E7C9 pt-[72px]">
+//     <div className="bg-[#FAF8F5] min-h-screen selection:bg-[#F3E7C9] pt-[72px]">
 //       {/* ── Ambient Grain ── */}
 //       <div
 //         className="pointer-events-none fixed inset-0 z-0 opacity-[0.035]"
@@ -316,13 +316,13 @@
 //         <div className="max-w-[1280px] mx-auto px-6 flex items-center justify-between h-[72px]">
 //           {/* Logo */}
 //           <Link href="/" className="flex items-center gap-4 flex-shrink-0 min-w-[260px]">
-//             <div className="w-[62px] h-[62px] rounded-2xl flex items-center justify-center bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-E8E2D8 p-2 shrink-0">
-//               <Image src="/Ara_Weather_Coat.png" alt="Colorsome logo" width={62} height={62} className="w-full h-full object-contain scale-[1.08]" />
+//             <div className="w-[62px] h-[62px] rounded-2xl flex items-center justify-center bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-[#E8E2D8] p-2 shrink-0">
+//               <Image src="/AraWeather.png" alt="Colorsome logo" width={62} height={62} className="w-full h-full object-contain scale-[1.08]" />
 //             </div>
 //             <div className="flex flex-col justify-center leading-none">
 //               <div className="flex items-start">
-//                 <span className="transition-colors duration-300 text-2D2D2D" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '2rem', lineHeight: 0.82, fontWeight: 700, letterSpacing: '-0.055em', textTransform: 'uppercase' }}>COLORSOME</span>
-//                 <span className="transition-colors duration-300 text-2D2D2D" style={{ fontFamily: 'var(--font-inter)', fontSize: '0.55rem', lineHeight: 1, fontWeight: 700, marginLeft: '0.18rem', marginTop: '0.12rem', letterSpacing: '0.04em' }}>®</span>
+//                 <span className="transition-colors duration-300 text-[#2D2D2D]" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '2rem', lineHeight: 0.82, fontWeight: 700, letterSpacing: '-0.055em', textTransform: 'uppercase' }}>COLORSOME</span>
+//                 <span className="transition-colors duration-300 text-[#2D2D2D]" style={{ fontFamily: 'var(--font-inter)', fontSize: '0.55rem', lineHeight: 1, fontWeight: 700, marginLeft: '0.18rem', marginTop: '0.12rem', letterSpacing: '0.04em' }}>®</span>
 //               </div>
 //             </div>
 //           </Link>
@@ -332,7 +332,7 @@
 //               {[['Home', '/'], ['Products', '/products'], ['Shades', '/shades'], ['Assistance', '/assistance'], ['About', '/about'], ['Contact', '/contact']].map(([label, href]) => {
 //                 const isActive = label === 'Products'
 //                 return (
-//                   <Link key={label} href={href} className={`relative rounded-full px-4 py-2.5 transition-all duration-200 ${isActive ? 'text-2D2D2D bg-F3E7C9' : 'text-6B6B6B hover:text-2D2D2D hover:bg-black/[0.04]'}`} style={{ fontFamily: 'var(--font-inter)', fontSize: '0.92rem', fontWeight: isActive ? 600 : 500, letterSpacing: '-0.01em', lineHeight: 1 }}>
+//                   <Link key={label} href={href} className={`relative rounded-full px-4 py-2.5 transition-all duration-200 ${isActive ? 'text-[#2D2D2D] bg-[#F3E7C9]' : 'text-[#6B6B6B] hover:text-[#2D2D2D] hover:bg-black/[0.04]'}`} style={{ fontFamily: 'var(--font-inter)', fontSize: '0.92rem', fontWeight: isActive ? 600 : 500, letterSpacing: '-0.01em', lineHeight: 1 }}>
 //                     {label}
 //                   </Link>
 //                 )
@@ -343,7 +343,7 @@
 //             <Link href="/assistance" className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 text-white flex-shrink-0" style={{ background: '#2D2D2D' }}>
 //               <Phone className="w-4 h-4" /> Book Assistance
 //             </Link>
-//             <button className="md:hidden p-2 rounded-lg transition-colors text-2D2D2D" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Menu">
+//             <button className="md:hidden p-2 rounded-lg transition-colors text-[#2D2D2D]" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Menu">
 //               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
 //             </button>
 //           </div>
@@ -380,7 +380,7 @@
 //             className="lg:col-span-5 lg:sticky lg:top-[116px]"
 //           >
 //             {/* Image Card */}
-//             <div className="rounded-[2.5rem] overflow-hidden bg-white border border-EDE6DA shadow-[0_20px_50px_rgba(45,45,45,0.05)] p-8 relative group transition-shadow duration-500 hover:shadow-[0_32px_70px_rgba(45,45,45,0.10)]">
+//             <div className="rounded-[2.5rem] overflow-hidden bg-white border border-[#EDE6DA] shadow-[0_20px_50px_rgba(45,45,45,0.05)] p-8 relative group transition-shadow duration-500 hover:shadow-[0_32px_70px_rgba(45,45,45,0.10)]">
 //               {/* Accent top bar */}
 //               <div className="absolute top-0 left-0 right-0 h-1.5 transition-all duration-500" style={{ background: `linear-gradient(90deg, ${accent}, ${accent}CC)` }} />
 //               {/* Category badge */}
@@ -416,7 +416,7 @@
 //               {summaryStats.map(({ label, value, icon }) => (
 //                 <div
 //                   key={label}
-//                   className="bg-white border border-EDE6DA rounded-2xl p-4 text-center group hover:shadow-md transition-all duration-200 hover:border-current cursor-default"
+//                   className="bg-white border border-[#EDE6DA] rounded-2xl p-4 text-center group hover:shadow-md transition-all duration-200 hover:border-current cursor-default"
 //                   style={{ '--tw-border-opacity': '1' } as React.CSSProperties}
 //                 >
 //                   <div className="flex items-center justify-center gap-1.5 mb-1.5" style={{ color: accent }}>
@@ -430,7 +430,7 @@
 
 //             {/* ── Pack Size Selector ── */}
 //             {packSizes.length > 0 && (
-//               <div className="mt-5 bg-white border border-EDE6DA rounded-2xl p-5">
+//               <div className="mt-5 bg-white border border-[#EDE6DA] rounded-2xl p-5">
 //                 <p className="text-[9px] uppercase tracking-widest font-black text-[#9B8E7E] mb-3" style={{ fontFamily: 'var(--font-inter)' }}>Available Pack Sizes</p>
 //                 <div className="flex flex-wrap gap-2">
 //                   {packSizes.map((size, i) => (
@@ -484,7 +484,7 @@
 //             </div>
 
 //             {/* ── TABS BAR ── */}
-//             <div className="border-b border-EDE6DA">
+//             <div className="border-b border-[#EDE6DA]">
 //               <div className="flex gap-0 overflow-x-auto scrollbar-none">
 //                 {TABS.map(tab => {
 //                   const sel = activeTab === tab.id
@@ -515,15 +515,15 @@
 //                   <motion.div key="overview" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }} className="space-y-5">
 //                     {/* Category + Status info cards */}
 //                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-//                       <div className="bg-white rounded-2xl border border-EDE6DA p-5">
+//                       <div className="bg-white rounded-2xl border border-[#EDE6DA] p-5">
 //                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-1" style={{ fontFamily: 'var(--font-inter)' }}>Category</p>
 //                         <p className="font-bold text-charcoal" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '1.1rem' }}>{product.category}</p>
 //                       </div>
-//                       <div className="bg-white rounded-2xl border border-EDE6DA p-5">
+//                       <div className="bg-white rounded-2xl border border-[#EDE6DA] p-5">
 //                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-1" style={{ fontFamily: 'var(--font-inter)' }}>Availability</p>
 //                         <p className="font-bold text-charcoal" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '1.1rem' }}>{product.status ?? 'In Stock'}</p>
 //                       </div>
-//                       <div className="bg-white rounded-2xl border border-EDE6DA p-5">
+//                       <div className="bg-white rounded-2xl border border-[#EDE6DA] p-5">
 //                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-1" style={{ fontFamily: 'var(--font-inter)' }}>Finish Type</p>
 //                         <p className="font-bold text-charcoal" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '1.1rem' }}>{techSpecs.finish ?? product.finish ?? 'Premium'}</p>
 //                       </div>
@@ -535,7 +535,7 @@
 //                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-3" style={{ fontFamily: 'var(--font-inter)' }}>Suitable For</p>
 //                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 //                           {product.applications.map((app: string, i: number) => (
-//                             <div key={i} className="flex items-center gap-3 p-3.5 bg-white border border-EDE6DA rounded-xl">
+//                             <div key={i} className="flex items-center gap-3 p-3.5 bg-white border border-[#EDE6DA] rounded-xl">
 //                               <span className="w-2 h-2 rounded-full shrink-0" style={{ background: accent }} />
 //                               <p className="text-[14px] text-charcoal font-medium" style={{ fontFamily: 'var(--font-inter)' }}>{app}</p>
 //                             </div>
@@ -580,7 +580,7 @@
 //                             initial={{ opacity: 0, y: 8 }}
 //                             animate={{ opacity: 1, y: 0 }}
 //                             transition={{ delay: i * 0.06, duration: 0.3 }}
-//                             className="group flex flex-col gap-3 p-5 bg-white border border-EDE6DA rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+//                             className="group flex flex-col gap-3 p-5 bg-white border border-[#EDE6DA] rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
 //                           >
 //                             {/* Icon circle */}
 //                             <div className="flex items-center gap-3">
@@ -613,7 +613,7 @@
 //                           initial={{ opacity: 0, y: 8 }}
 //                           animate={{ opacity: 1, y: 0 }}
 //                           transition={{ delay: i * 0.07 }}
-//                           className="bg-white border border-EDE6DA rounded-2xl overflow-hidden"
+//                           className="bg-white border border-[#EDE6DA] rounded-2xl overflow-hidden"
 //                           style={{ borderLeft: `3px solid ${isOpen ? accent : '#EDE6DA'}` }}
 //                         >
 //                           <button
@@ -667,9 +667,9 @@
 //                 {/* ── SPECIFICATIONS ── */}
 //                 {activeTab === 'specs' && (
 //                   <motion.div key="specs" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }}>
-//                     <div className="bg-white border border-EDE6DA rounded-2xl overflow-hidden">
+//                     <div className="bg-white border border-[#EDE6DA] rounded-2xl overflow-hidden">
 //                       {/* Section heading */}
-//                       <div className="px-6 py-4 border-b border-EDE6DA" style={{ background: `${accent}06` }}>
+//                       <div className="px-6 py-4 border-b border-[#EDE6DA]" style={{ background: `${accent}06` }}>
 //                         <p className="text-[11px] uppercase font-black tracking-widest" style={{ color: accent, fontFamily: 'var(--font-inter)' }}>Technical Data Sheet</p>
 //                       </div>
 //                       <div className="px-6 py-2">
@@ -700,7 +700,7 @@
 //             </div>
 
 //             {/* ── CTA Buttons ── */}
-//             <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-EDE6DA">
+//             <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-[#EDE6DA]">
 //               <Link
 //                 href="/assistance"
 //                 className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl text-xs uppercase tracking-widest font-black text-white shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex-1"
@@ -710,7 +710,7 @@
 //               </Link>
 //               <button
 //                 onClick={() => router.push('/products')}
-//                 className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white border border-EDE6DA text-charcoal rounded-xl text-xs uppercase tracking-widest font-black shadow-sm hover:bg-FDFBF7 hover:border-D5CBBC active:scale-[0.98] transition-all"
+//                 className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white border border-[#EDE6DA] text-charcoal rounded-xl text-xs uppercase tracking-widest font-black shadow-sm hover:bg-[#FDFBF7] hover:border-[#D5CBBC] active:scale-[0.98] transition-all"
 //                 style={{ fontFamily: 'var(--font-inter)', letterSpacing: '0.1em' }}
 //               >
 //                 <ArrowLeft className="w-3.5 h-3.5" /> Back to Catalog
@@ -722,7 +722,7 @@
 
 //       {/* ──════════════════ FEATURE HIGHLIGHTS STRIP ══════════════════ */}
 //       {product.features && product.features.length > 0 && (
-//         <section className="border-t border-EDE6DA py-16" style={{ background: BRAND.dark }}>
+//         <section className="border-t border-[#EDE6DA] py-16" style={{ background: BRAND.dark }}>
 //           <div className="max-w-[1280px] mx-auto px-6">
 //             <div className="text-center mb-10">
 //               <p className="text-[10px] uppercase tracking-[0.25em] font-black mb-2" style={{ color: accent, fontFamily: 'var(--font-inter)' }}>Performance Profile</p>
@@ -783,7 +783,7 @@
 //                   { icon: <BadgeCheck className="w-5 h-5" />, label: 'Quality Tested', val: '12-Stage QC' },
 //                   { icon: <Eye className="w-5 h-5" />, label: 'Colour Verified', val: 'Lab Matched' },
 //                 ].map(({ icon, label, val }) => (
-//                   <div key={label} className="flex items-center gap-3 p-4 rounded-xl border border-EDE6DA bg-FAF8F5">
+//                   <div key={label} className="flex items-center gap-3 p-4 rounded-xl border border-[#EDE6DA] bg-[#FAF8F5]">
 //                     <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${accent}12`, color: accent }}>{icon}</div>
 //                     <div>
 //                       <p className="text-[9px] uppercase tracking-wider font-black text-[#9B8E7E]" style={{ fontFamily: 'var(--font-inter)' }}>{label}</p>
@@ -807,7 +807,7 @@
 //                 { end: 10, suffix: ' Yrs', label: 'Proven Performance Life' },
 //                 { end: 100, suffix: '%', label: 'Eco-Friendly & Low VOC' },
 //               ].map(({ end, suffix, label }) => (
-//                 <div key={label} className="p-6 rounded-2xl border border-EDE6DA bg-FAF8F5 text-center">
+//                 <div key={label} className="p-6 rounded-2xl border border-[#EDE6DA] bg-[#FAF8F5] text-center">
 //                   <p className="font-bold text-4xl mb-1" style={{ fontFamily: 'var(--font-cormorant)', color: accent }}>
 //                     <CountUp end={end} suffix={suffix} />
 //                   </p>
@@ -821,7 +821,7 @@
 
 //       {/* ──════════════════ RELATED PRODUCTS ══════════════════ */}
 //       {related.length > 0 && (
-//         <section className="border-t border-EDE6DA py-20 bg-FAF8F5">
+//         <section className="border-t border-[#EDE6DA] py-20 bg-[#FAF8F5]">
 //           <div className="max-w-[1280px] mx-auto px-6">
 //             <div className="mb-10">
 //               <p className="text-[10px] uppercase tracking-[0.25em] font-black mb-1" style={{ color: '#B8A48A', fontFamily: 'var(--font-inter)' }}>You May Also Like</p>
@@ -834,7 +834,7 @@
 //                   <Link
 //                     key={p.id}
 //                     href={`/products/${p.slug}`}
-//                     className="group block flex flex-col justify-between rounded-[1.8rem] bg-white border border-EDE6DA overflow-hidden hover:shadow-[0_24px_50px_rgba(45,45,45,0.06)] hover:-translate-y-1 transition-all duration-500 h-full"
+//                     className="group block flex flex-col justify-between rounded-[1.8rem] bg-white border border-[#EDE6DA] overflow-hidden hover:shadow-[0_24px_50px_rgba(45,45,45,0.06)] hover:-translate-y-1 transition-all duration-500 h-full"
 //                   >
 //                     <div>
 //                       <div className="h-1 w-full" style={{ background: relAccent }} />
@@ -1001,7 +1001,7 @@
 // function SpecRow({ label, value, accent }: { label: string; value?: string; accent: string }) {
 //   if (!value) return null
 //   return (
-//     <div className="flex items-start gap-4 py-3 border-b border-EDE6DA last:border-0">
+//     <div className="flex items-start gap-4 py-3 border-b border-[#EDE6DA] last:border-0">
 //       <span
 //         className="text-9px uppercase tracking-widest font-black w-28 shrink-0 pt-0.5"
 //         style={{ color: '#9B8E7E', fontFamily: 'var(--font-inter)' }}
@@ -1070,9 +1070,9 @@
 
 //   if (!product) {
 //     return (
-//       <div className="min-h-screen flex flex-col items-center justify-center bg-FAF8F5 pt-[120px]">
+//       <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F5] pt-[120px]">
 //         <Header />
-//         <div className="text-center max-w-md bg-white border border-EDE7DC p-10 rounded-2rem shadow-sm">
+//         <div className="text-center max-w-md bg-white border border-[#EDE7DC] p-10 rounded-2rem shadow-sm">
 //           <Paintbrush className="w-10 h-10 text-gold mx-auto mb-4 animate-pulse" />
 //           <h1 className="font-serif text-2xl font-bold text-charcoal mb-2" style={{ fontFamily: 'var(--font-cormorant)' }}>
 //             Product Not Found
@@ -1159,7 +1159,7 @@
 //   ]
 
 //   return (
-//     <div className="bg-FAF8F5 min-h-screen selection:bg-F3E7C9 pt-[72px]">
+//     <div className="bg-[#FAF8F5] min-h-screen selection:bg-[#F3E7C9] pt-[72px]">
 //       {/* ── Ambient Grain ── */}
 //       <div
 //         className="pointer-events-none fixed inset-0 z-0 opacity-[0.035]"
@@ -1198,7 +1198,7 @@
 //             className="lg:col-span-5 lg:sticky lg:top-[116px]"
 //           >
 //             {/* Image Card */}
-//             <div className="rounded-[2.5rem] overflow-hidden bg-white border border-EDE6DA shadow-[0_20px_50px_rgba(45,45,45,0.05)] p-8 relative group transition-shadow duration-500 hover:shadow-[0_32px_70px_rgba(45,45,45,0.10)]">
+//             <div className="rounded-[2.5rem] overflow-hidden bg-white border border-[#EDE6DA] shadow-[0_20px_50px_rgba(45,45,45,0.05)] p-8 relative group transition-shadow duration-500 hover:shadow-[0_32px_70px_rgba(45,45,45,0.10)]">
 //               {/* Accent top bar */}
 //               <div className="absolute top-0 left-0 right-0 h-1.5 transition-all duration-500" style={{ background: `linear-gradient(90deg, ${accent}, ${accent}CC)` }} />
 //               {/* Category badge */}
@@ -1234,7 +1234,7 @@
 //               {summaryStats.map(({ label, value, icon }) => (
 //                 <div
 //                   key={label}
-//                   className="bg-white border border-EDE6DA rounded-2xl p-4 text-center group hover:shadow-md transition-all duration-200 hover:border-current cursor-default"
+//                   className="bg-white border border-[#EDE6DA] rounded-2xl p-4 text-center group hover:shadow-md transition-all duration-200 hover:border-current cursor-default"
 //                   style={{ '--tw-border-opacity': '1' } as React.CSSProperties}
 //                 >
 //                   <div className="flex items-center justify-center gap-1.5 mb-1.5" style={{ color: accent }}>
@@ -1248,7 +1248,7 @@
 
 //             {/* ── Pack Size Selector ── */}
 //             {packSizes.length > 0 && (
-//               <div className="mt-5 bg-white border border-EDE6DA rounded-2xl p-5">
+//               <div className="mt-5 bg-white border border-[#EDE6DA] rounded-2xl p-5">
 //                 <p className="text-[9px] uppercase tracking-widest font-black text-[#9B8E7E] mb-3" style={{ fontFamily: 'var(--font-inter)' }}>Available Pack Sizes</p>
 //                 <div className="flex flex-wrap gap-2">
 //                   {packSizes.map((size, i) => (
@@ -1302,7 +1302,7 @@
 //             </div>
 
 //             {/* ── TABS BAR ── */}
-//             <div className="border-b border-EDE6DA">
+//             <div className="border-b border-[#EDE6DA]">
 //               <div className="flex gap-0 overflow-x-auto scrollbar-none">
 //                 {TABS.map(tab => {
 //                   const sel = activeTab === tab.id
@@ -1333,15 +1333,15 @@
 //                   <motion.div key="overview" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }} className="space-y-5">
 //                     {/* Category + Status info cards */}
 //                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-//                       <div className="bg-white rounded-2xl border border-EDE6DA p-5">
+//                       <div className="bg-white rounded-2xl border border-[#EDE6DA] p-5">
 //                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-1" style={{ fontFamily: 'var(--font-inter)' }}>Category</p>
 //                         <p className="font-bold text-charcoal" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '1.1rem' }}>{product.category}</p>
 //                       </div>
-//                       <div className="bg-white rounded-2xl border border-EDE6DA p-5">
+//                       <div className="bg-white rounded-2xl border border-[#EDE6DA] p-5">
 //                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-1" style={{ fontFamily: 'var(--font-inter)' }}>Availability</p>
 //                         <p className="font-bold text-charcoal" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '1.1rem' }}>{product.status ?? 'In Stock'}</p>
 //                       </div>
-//                       <div className="bg-white rounded-2xl border border-EDE6DA p-5">
+//                       <div className="bg-white rounded-2xl border border-[#EDE6DA] p-5">
 //                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-1" style={{ fontFamily: 'var(--font-inter)' }}>Finish Type</p>
 //                         <p className="font-bold text-charcoal" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '1.1rem' }}>{techSpecs.finish ?? product.finish ?? 'Premium'}</p>
 //                       </div>
@@ -1353,7 +1353,7 @@
 //                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-3" style={{ fontFamily: 'var(--font-inter)' }}>Suitable For</p>
 //                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
 //                           {product.applications.map((app: string, i: number) => (
-//                             <div key={i} className="flex items-center gap-3 p-3.5 bg-white border border-EDE6DA rounded-xl">
+//                             <div key={i} className="flex items-center gap-3 p-3.5 bg-white border border-[#EDE6DA] rounded-xl">
 //                               <span className="w-2 h-2 rounded-full shrink-0" style={{ background: accent }} />
 //                               <p className="text-[14px] text-charcoal font-medium" style={{ fontFamily: 'var(--font-inter)' }}>{app}</p>
 //                             </div>
@@ -1398,7 +1398,7 @@
 //                             initial={{ opacity: 0, y: 8 }}
 //                             animate={{ opacity: 1, y: 0 }}
 //                             transition={{ delay: i * 0.06, duration: 0.3 }}
-//                             className="group flex flex-col gap-3 p-5 bg-white border border-EDE6DA rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+//                             className="group flex flex-col gap-3 p-5 bg-white border border-[#EDE6DA] rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
 //                           >
 //                             {/* Icon circle */}
 //                             <div className="flex items-center gap-3">
@@ -1431,7 +1431,7 @@
 //                           initial={{ opacity: 0, y: 8 }}
 //                           animate={{ opacity: 1, y: 0 }}
 //                           transition={{ delay: i * 0.07 }}
-//                           className="bg-white border border-EDE6DA rounded-2xl overflow-hidden"
+//                           className="bg-white border border-[#EDE6DA] rounded-2xl overflow-hidden"
 //                           style={{ borderLeft: `3px solid ${isOpen ? accent : '#EDE6DA'}` }}
 //                         >
 //                           <button
@@ -1485,9 +1485,9 @@
 //                 {/* ── SPECIFICATIONS ── */}
 //                 {activeTab === 'specs' && (
 //                   <motion.div key="specs" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }}>
-//                     <div className="bg-white border border-EDE6DA rounded-2xl overflow-hidden">
+//                     <div className="bg-white border border-[#EDE6DA] rounded-2xl overflow-hidden">
 //                       {/* Section heading */}
-//                       <div className="px-6 py-4 border-b border-EDE6DA" style={{ background: `${accent}06` }}>
+//                       <div className="px-6 py-4 border-b border-[#EDE6DA]" style={{ background: `${accent}06` }}>
 //                         <p className="text-[11px] uppercase font-black tracking-widest" style={{ color: accent, fontFamily: 'var(--font-inter)' }}>Technical Data Sheet</p>
 //                       </div>
 //                       <div className="px-6 py-2">
@@ -1518,7 +1518,7 @@
 //             </div>
 
 //             {/* ── CTA Buttons ── */}
-//             <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-EDE6DA">
+//             <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-[#EDE6DA]">
 //               <Link
 //                 href="/assistance"
 //                 className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl text-xs uppercase tracking-widest font-black text-white shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex-1"
@@ -1528,7 +1528,7 @@
 //               </Link>
 //               <button
 //                 onClick={() => router.push('/products')}
-//                 className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white border border-EDE6DA text-charcoal rounded-xl text-xs uppercase tracking-widest font-black shadow-sm hover:bg-FDFBF7 hover:border-D5CBBC active:scale-[0.98] transition-all"
+//                 className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white border border-[#EDE6DA] text-charcoal rounded-xl text-xs uppercase tracking-widest font-black shadow-sm hover:bg-[#FDFBF7] hover:border-[#D5CBBC] active:scale-[0.98] transition-all"
 //                 style={{ fontFamily: 'var(--font-inter)', letterSpacing: '0.1em' }}
 //               >
 //                 <ArrowLeft className="w-3.5 h-3.5" /> Back to Catalog
@@ -1540,7 +1540,7 @@
 
 //       {/* ──════════════════ FEATURE HIGHLIGHTS STRIP ══════════════════ */}
 //       {product.features && product.features.length > 0 && (
-//         <section className="border-t border-EDE6DA py-16" style={{ background: BRAND.dark }}>
+//         <section className="border-t border-[#EDE6DA] py-16" style={{ background: BRAND.dark }}>
 //           <div className="max-w-[1280px] mx-auto px-6">
 //             <div className="text-center mb-10">
 //               <p className="text-[10px] uppercase tracking-[0.25em] font-black mb-2" style={{ color: accent, fontFamily: 'var(--font-inter)' }}>Performance Profile</p>
@@ -1601,7 +1601,7 @@
 //                   { icon: <BadgeCheck className="w-5 h-5" />, label: 'Quality Tested', val: '12-Stage QC' },
 //                   { icon: <Eye className="w-5 h-5" />, label: 'Colour Verified', val: 'Lab Matched' },
 //                 ].map(({ icon, label, val }) => (
-//                   <div key={label} className="flex items-center gap-3 p-4 rounded-xl border border-EDE6DA bg-FAF8F5">
+//                   <div key={label} className="flex items-center gap-3 p-4 rounded-xl border border-[#EDE6DA] bg-[#FAF8F5]">
 //                     <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${accent}12`, color: accent }}>{icon}</div>
 //                     <div>
 //                       <p className="text-[9px] uppercase tracking-wider font-black text-[#9B8E7E]" style={{ fontFamily: 'var(--font-inter)' }}>{label}</p>
@@ -1625,7 +1625,7 @@
 //                 { end: 10, suffix: ' Yrs', label: 'Proven Performance Life' },
 //                 { end: 100, suffix: '%', label: 'Eco-Friendly & Low VOC' },
 //               ].map(({ end, suffix, label }) => (
-//                 <div key={label} className="p-6 rounded-2xl border border-EDE6DA bg-FAF8F5 text-center">
+//                 <div key={label} className="p-6 rounded-2xl border border-[#EDE6DA] bg-[#FAF8F5] text-center">
 //                   <p className="font-bold text-4xl mb-1" style={{ fontFamily: 'var(--font-cormorant)', color: accent }}>
 //                     <CountUp end={end} suffix={suffix} />
 //                   </p>
@@ -1639,7 +1639,7 @@
 
 //       {/* ──════════════════ RELATED PRODUCTS ══════════════════ */}
 //       {related.length > 0 && (
-//         <section className="border-t border-EDE6DA py-20 bg-FAF8F5">
+//         <section className="border-t border-[#EDE6DA] py-20 bg-[#FAF8F5]">
 //           <div className="max-w-[1280px] mx-auto px-6">
 //             <div className="mb-10">
 //               <p className="text-[10px] uppercase tracking-[0.25em] font-black mb-1" style={{ color: '#B8A48A', fontFamily: 'var(--font-inter)' }}>You May Also Like</p>
@@ -1652,7 +1652,7 @@
 //                   <Link
 //                     key={p.id}
 //                     href={`/products/${p.slug}`}
-//                     className="group block flex flex-col justify-between rounded-[1.8rem] bg-white border border-EDE6DA overflow-hidden hover:shadow-[0_24px_50px_rgba(45,45,45,0.06)] hover:-translate-y-1 transition-all duration-500 h-full"
+//                     className="group block flex flex-col justify-between rounded-[1.8rem] bg-white border border-[#EDE6DA] overflow-hidden hover:shadow-[0_24px_50px_rgba(45,45,45,0.06)] hover:-translate-y-1 transition-all duration-500 h-full"
 //                   >
 //                     <div>
 //                       <div className="h-1 w-full" style={{ background: relAccent }} />
@@ -1706,9 +1706,11 @@ import {
   Shield, Droplets, Layers, Zap, Leaf, Maximize2, Sun,
   Paintbrush, Star, Clock, Award, FlaskConical, Ruler,
   Sparkles, Package, ChevronDown, Eye, BadgeCheck,
-  ThumbsUp, Info, Beaker, Hammer
+  ThumbsUp, Info, Beaker, Hammer, HelpCircle,
+  Home as HomeIcon, Palette, Mail
 } from 'lucide-react'
 import { products } from '../data'
+import { getCategoryFaq } from '../faqTemplates'
 import { Footer } from '@/src/components/Footer';
 
 // Restrained luxury palette — see src/lib/palette.ts for the shared source.
@@ -1826,7 +1828,7 @@ const STEP_ICONS = [
 function SpecRow({ label, value }: { label: string; value?: string; accent?: string }) {
   if (!value) return null
   return (
-    <div className="flex items-start gap-4 py-3 border-b border-EDE6DA last:border-0">
+    <div className="flex items-start gap-4 py-3 border-b border-[#EDE6DA] last:border-0">
       <span
         className="text-9px uppercase tracking-widest font-black w-36 shrink-0 pt-0.5 whitespace-nowrap"
         style={{ color: '#9B8E7E', fontFamily: 'var(--font-inter)' }}
@@ -1890,9 +1892,23 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
   const [scrolled, setScrolled] = useState(false)
   const [activePack, setActivePack] = useState(0)
   const [expandedStep, setExpandedStep] = useState<number | null>(0)
+  const [openFaq, setOpenFaq] = useState<number | null>(0)
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+    // The browser's native scroll restoration (default: 'auto') re-applies the
+    // scroll position from a previous visit/reload of this same URL, and it can
+    // fire after this effect — which made a refreshed or revisited product page
+    // appear to "open mid-page" instead of at the top. Forcing 'manual' stops
+    // the browser from fighting the explicit scrollTo below.
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+    // globals.css sets `scroll-behavior: smooth` on <html>, so the old two-arg
+    // scrollTo(0, 0) call animated up from wherever the previous page was
+    // scrolled to instead of jumping instantly — that visible animated scroll
+    // is what read as "opening from the middle". `behavior: 'instant'`
+    // explicitly overrides the CSS smooth-scroll default for this jump only.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
     const onScroll = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
@@ -1901,8 +1917,8 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
 
   if (!product) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-FAF8F5 pt-[120px]">
-        <div className="text-center max-w-md bg-white border border-EDE7DC p-10 rounded-2rem shadow-sm">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F5] pt-[120px]">
+        <div className="text-center max-w-md bg-white border border-[#EDE7DC] p-10 rounded-2rem shadow-sm">
           <Paintbrush className="w-10 h-10 text-gold mx-auto mb-4 animate-pulse" />
           <h1 className="font-serif text-2xl font-bold text-charcoal mb-2" style={{ fontFamily: 'var(--font-cormorant)' }}>
             Product Not Found
@@ -1920,8 +1936,8 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
 
   const related = products.filter(p => p.category === product.category && p.slug !== slug).slice(0, 4)
   const navBg = scrolled
-    ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-F0EAE1'
-    : 'bg-white/95 backdrop-blur-md border-b border-F0EAE1'
+    ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-[#F0EAE1]'
+    : 'bg-white/95 backdrop-blur-md border-b border-[#F0EAE1]'
 
   // ─── Category-Specific Application Steps Fallbacks ─────────────────
   const CATEGORY_HOW_TO_MAP: Record<string, { step: string; title: string; desc: string }[]> = {
@@ -2017,13 +2033,21 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
   // Build technical specs object
   const techSpecs = (product as any).technicalSpecs ?? {}
 
-  // Summary stats for the hero strip
+  // Summary stats for the hero strip — Coverage/Dry Time only shown when the
+  // product actually has that data, so we never present a fabricated number
+  // as if it were a real spec.
   const summaryStats = [
-    { label: 'Coverage', value: techSpecs.coverage ?? '130–150 sq.ft/L', icon: <Ruler className="w-4 h-4" /> },
+    techSpecs.coverage && { label: 'Coverage', value: techSpecs.coverage, icon: <Ruler className="w-4 h-4" /> },
     { label: 'Finish', value: techSpecs.finish ?? product.finish ?? 'Premium', icon: <Sparkles className="w-4 h-4" /> },
-    { label: 'Dry Time', value: techSpecs.dryingTime ?? '30 min touch', icon: <Clock className="w-4 h-4" /> },
+    techSpecs.dryingTime && { label: 'Dry Time', value: techSpecs.dryingTime, icon: <Clock className="w-4 h-4" /> },
     { label: 'Application', value: techSpecs.application ?? 'Brush / Roller / Spray', icon: <Paintbrush className="w-4 h-4" /> },
-  ]
+  ].filter(Boolean) as { label: string; value: string; icon: React.ReactNode }[]
+
+  // Category-specific FAQ template (see ../faqTemplates.ts) — reused across
+  // every product in the same category group rather than one generic list.
+  // Answers pull in this product's real technicalSpecs where available and
+  // fall back to general category guidance rather than inventing numbers.
+  const faqItems = getCategoryFaq(product)
 
   const TABS: { id: Tab; label: string }[] = [
     { id: 'overview', label: 'Overview' },
@@ -2033,7 +2057,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
   ]
 
   return (
-    <div className="bg-FAF8F5 min-h-screen selection:bg-F3E7C9 pt-[72px]">
+    <div className="bg-[#FAF8F5] min-h-screen selection:bg-[#F3E7C9] pt-[72px]">
       {/* ── Ambient Grain ── */}
       <div
         className="pointer-events-none fixed inset-0 z-0 opacity-[0.035]"
@@ -2060,24 +2084,26 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}>
         <div className="max-w-[1280px] mx-auto px-6 flex items-center justify-between h-[72px]">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-4 flex-shrink-0 min-w-[260px]">
-            <div className="w-[62px] h-[62px] rounded-2xl flex items-center justify-center bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-E8E2D8 p-2 shrink-0">
-              <Image src="/Ara_Weather_Coat.png" alt="Colorsome logo" width={62} height={62} className="w-full h-full object-contain scale-[1.08]" />
+          <Link href="/" className="flex items-center gap-2 sm:gap-4 flex-shrink-0 min-w-0 lg:min-w-[260px]">
+            <div className="w-[46px] h-[46px] sm:w-[62px] sm:h-[62px] rounded-2xl flex items-center justify-center bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-[#E8E2D8] p-1.5 sm:p-2 shrink-0">
+              <Image src="/Logo.png" alt="Colorsome logo" width={62} height={62} className="w-full h-full object-contain scale-[1.08]" />
             </div>
-            <div className="flex flex-col justify-center leading-none">
+            <div className="flex flex-col justify-center leading-none min-w-0">
               <div className="flex items-start">
-                <span className="transition-colors duration-300 text-2D2D2D" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '2rem', lineHeight: 0.82, fontWeight: 700, letterSpacing: '-0.055em', textTransform: 'uppercase' }}>COLORSOME</span>
-                <span className="transition-colors duration-300 text-2D2D2D" style={{ fontFamily: 'var(--font-inter)', fontSize: '0.55rem', lineHeight: 1, fontWeight: 700, marginLeft: '0.18rem', marginTop: '0.12rem', letterSpacing: '0.04em' }}>®</span>
+                <span className="transition-colors duration-300 text-[#2D2D2D]" style={{ fontFamily: 'var(--font-cormorant)', fontSize: 'clamp(1.35rem, 5vw, 2rem)', lineHeight: 0.82, fontWeight: 700, letterSpacing: '-0.055em', textTransform: 'uppercase' }}>COLORSOME</span>
+                <span className="transition-colors duration-300 text-[#2D2D2D]" style={{ fontFamily: 'var(--font-inter)', fontSize: '0.55rem', lineHeight: 1, fontWeight: 700, marginLeft: '0.18rem', marginTop: '0.12rem', letterSpacing: '0.04em' }}>®</span>
               </div>
             </div>
           </Link>
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center">
+          {/* Desktop nav — reveals at lg (1024px); at md (768px) the full
+              6-link pill + CTA button don't comfortably fit, so tablet
+              widths fall back to the hamburger menu instead. */}
+          <nav className="hidden lg:flex items-center">
             <div className="flex items-center gap-1 rounded-full border border-black/[0.06] bg-white/80 backdrop-blur-md px-2 py-1 shadow-[0_8px_24px_rgba(0,0,0,0.02)]">
               {[['Home', '/'], ['Products', '/products'], ['Shades', '/shades'], ['Assistance', '/assistance'], ['About', '/about'], ['Contact', '/contact']].map(([label, href]) => {
                 const isActive = label === 'Products'
                 return (
-                  <Link key={label} href={href} className={`relative rounded-full px-4 py-2.5 transition-all duration-200 ${isActive ? 'text-2D2D2D bg-F3E7C9' : 'text-6B6B6B hover:text-2D2D2D hover:bg-black/[0.04]'}`} style={{ fontFamily: 'var(--font-inter)', fontSize: '0.92rem', fontWeight: isActive ? 600 : 500, letterSpacing: '-0.01em', lineHeight: 1 }}>
+                  <Link key={label} href={href} className={`relative rounded-full px-4 py-2.5 transition-all duration-200 ${isActive ? 'text-[#2D2D2D] bg-[#F3E7C9]' : 'text-[#6B6B6B] hover:text-[#2D2D2D] hover:bg-black/[0.04]'}`} style={{ fontFamily: 'var(--font-inter)', fontSize: '0.92rem', fontWeight: isActive ? 600 : 500, letterSpacing: '-0.01em', lineHeight: 1 }}>
                     {label}
                   </Link>
                 )
@@ -2085,21 +2111,84 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
             </div>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/assistance" className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 text-white flex-shrink-0" style={{ background: '#2D2D2D' }}>
+            <Link href="/assistance" className="hidden lg:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 text-white flex-shrink-0" style={{ background: '#2D2D2D' }}>
               <Phone className="w-4 h-4" /> Book Assistance
             </Link>
-            <button className="md:hidden p-2 rounded-lg transition-colors text-2D2D2D" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Menu">
+            <button className="lg:hidden p-2.5 -mr-1 rounded-lg transition-colors text-[#2D2D2D]" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Menu">
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="md:hidden bg-white border-t border-gray-100 shadow-xl px-6 py-4 space-y-3">
-              {[['Home', '/'], ['Products', '/products'], ['Shades', '/shades'], ['Assistance', '/assistance'], ['About', '/about'], ['Contact', '/contact']].map(([label, href]) => (
-                <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="block text-sm font-medium text-charcoal hover:text-gold transition-colors py-2 border-b border-gray-50">{label}</Link>
-              ))}
-            </motion.div>
+            <>
+              {/* Backdrop */}
+              <motion.div
+                className="lg:hidden fixed inset-0 top-[72px] bg-black/30 backdrop-blur-[2px] z-40"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                onClick={() => setMobileMenuOpen(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, y: -12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="lg:hidden absolute top-full left-0 right-0 z-50 mx-3 mt-2 bg-white rounded-3xl border border-[#EDE6DA] shadow-[0_24px_60px_rgba(0,0,0,0.18)] overflow-hidden"
+              >
+                <motion.nav
+                  initial="hidden"
+                  animate="show"
+                  variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05, delayChildren: 0.08 } } }}
+                  className="px-3 py-3"
+                >
+                  {[
+                    ['Home', '/', HomeIcon],
+                    ['Products', '/products', Package],
+                    ['Shades', '/shades', Palette],
+                    ['Assistance', '/assistance', HelpCircle],
+                    ['About', '/about', Info],
+                    ['Contact', '/contact', Mail],
+                  ].map(([label, href, Icon]: any) => {
+                    const isActive = label === 'Products'
+                    return (
+                      <motion.div
+                        key={href}
+                        variants={{ hidden: { opacity: 0, x: -12 }, show: { opacity: 1, x: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } } }}
+                      >
+                        <Link
+                          href={href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-[15px] font-semibold transition-colors duration-200 ${isActive ? '' : 'text-[#2D2D2D] hover:bg-[#FAF8F5]'}`}
+                          style={{ background: isActive ? '#F3E7C912' : undefined, color: isActive ? '#C9A858' : undefined }}
+                        >
+                          <span
+                            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                            style={{ background: isActive ? '#F3E7C9' : '#F7F6F2', color: isActive ? '#B8952E' : '#8C8C8C' }}
+                          >
+                            <Icon className="w-4 h-4" />
+                          </span>
+                          {label}
+                        </Link>
+                      </motion.div>
+                    )
+                  })}
+                </motion.nav>
+                <div className="px-4 pb-4 pt-1">
+                  <Link
+                    href="/assistance"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="group relative overflow-hidden flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-xs uppercase tracking-widest font-bold text-white bg-[#2D2D2D] shadow-[0_10px_25px_rgba(0,0,0,0.2)] active:scale-[0.98] transition-transform"
+                    style={{ background: '#2D2D2D' }}
+                  >
+                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)' }} />
+                    <Phone className="w-3.5 h-3.5 relative" /> <span className="relative">Book Assistance</span>
+                  </Link>
+                </div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </header>
@@ -2125,7 +2214,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
             className="lg:col-span-5 lg:sticky lg:top-[116px]"
           >
             {/* Image Card */}
-            <div className="rounded-[2.5rem] overflow-hidden bg-white border border-EDE6DA shadow-[0_20px_50px_rgba(45,45,45,0.05)] p-8 relative group transition-shadow duration-500 hover:shadow-[0_32px_70px_rgba(45,45,45,0.10)]">
+            <div className="rounded-[2rem] lg:rounded-[2.5rem] overflow-hidden bg-white border border-[#EDE6DA] shadow-[0_20px_50px_rgba(45,45,45,0.05)] p-5 sm:p-6 lg:p-8 relative group transition-shadow duration-500 hover:shadow-[0_32px_70px_rgba(45,45,45,0.10)]">
               {/* Accent top bar */}
               <div className="absolute top-0 left-0 right-0 h-1.5 transition-all duration-500" style={{ background: `linear-gradient(90deg, ${accent}, ${accent}CC)` }} />
               {/* Category badge */}
@@ -2176,15 +2265,14 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
                   y: { duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.6 },
                 }}
                 whileHover={{ scale: 1.045, y: -14, rotate: 0, transition: { type: 'spring', damping: 16, stiffness: 200 } }}
-                className="relative flex items-center justify-center cursor-zoom-in"
-                style={{ height: 380 }}
+                className="relative flex items-center justify-center cursor-zoom-in h-[220px] sm:h-[280px] lg:h-[380px]"
               >
                 <Image
                   src={product.image}
                   alt={product.name}
                   width={360}
                   height={380}
-                  className="h-80 w-auto object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.13)] z-10 relative transition-[filter] duration-500 group-hover:drop-shadow-[0_32px_50px_rgba(0,0,0,0.18)]"
+                  className="h-[200px] sm:h-64 lg:h-80 w-auto object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.13)] z-10 relative transition-[filter] duration-500 group-hover:drop-shadow-[0_32px_50px_rgba(0,0,0,0.18)]"
                   priority
                 />
                 {/* Shine sweep */}
@@ -2216,7 +2304,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
               {summaryStats.map(({ label, value, icon }) => (
                 <div
                   key={label}
-                  className="bg-white border border-EDE6DA rounded-2xl p-4 text-center group hover:shadow-md transition-all duration-200 hover:border-current cursor-default"
+                  className="bg-white border border-[#EDE6DA] rounded-2xl p-4 text-center group hover:shadow-md transition-all duration-200 hover:border-current cursor-default"
                   style={{ '--tw-border-opacity': '1' } as React.CSSProperties}
                 >
                   <div className="flex items-center justify-center gap-1.5 mb-1.5" style={{ color: accent }}>
@@ -2230,14 +2318,14 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
 
             {/* ── Pack Size Selector ── */}
             {packSizes.length > 0 && (
-              <div className="mt-5 bg-white border border-EDE6DA rounded-2xl p-5">
+              <div className="mt-5 bg-white border border-[#EDE6DA] rounded-2xl p-5">
                 <p className="text-[9px] uppercase tracking-widest font-black text-[#9B8E7E] mb-3" style={{ fontFamily: 'var(--font-inter)' }}>Available Pack Sizes</p>
                 <div className="flex flex-wrap gap-2">
                   {packSizes.map((size, i) => (
                     <button
                       key={size}
                       onClick={() => setActivePack(i)}
-                      className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-200"
+                      className="px-4 py-2.5 lg:py-2 rounded-xl text-xs font-bold uppercase tracking-wide transition-all duration-200"
                       style={{
                         fontFamily: 'var(--font-inter)',
                         background: activePack === i ? accent : 'transparent',
@@ -2323,15 +2411,15 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
             </div>
 
             {/* ── TABS BAR ── */}
-            <div className="border-b border-EDE6DA">
-              <div className="relative flex gap-0 overflow-x-auto scrollbar-none">
+            <div className="border-b border-[#EDE6DA]">
+              <div className="relative flex gap-0 overflow-x-auto scrollbar-none pr-6 lg:pr-0">
                 {TABS.map(tab => {
                   const sel = activeTab === tab.id
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className="relative px-5 py-3 text-[11px] uppercase tracking-widest font-black transition-colors whitespace-nowrap"
+                      className="relative px-5 py-3.5 lg:py-3 text-[11px] uppercase tracking-widest font-black transition-colors whitespace-nowrap shrink-0"
                       style={{
                         fontFamily: 'var(--font-inter)',
                         color: sel ? '#2D2D2D' : '#9B8E7E',
@@ -2361,15 +2449,15 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
                   <motion.div key="overview" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }} className="space-y-5">
                     {/* Category + Status info cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div className="bg-white rounded-2xl border border-EDE6DA p-5">
+                      <div className="bg-white rounded-2xl border border-[#EDE6DA] p-5">
                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-1" style={{ fontFamily: 'var(--font-inter)' }}>Category</p>
                         <p className="font-bold text-charcoal" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '1.1rem' }}>{product.category}</p>
                       </div>
-                      <div className="bg-white rounded-2xl border border-EDE6DA p-5">
+                      <div className="bg-white rounded-2xl border border-[#EDE6DA] p-5">
                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-1" style={{ fontFamily: 'var(--font-inter)' }}>Availability</p>
                         <p className="font-bold text-charcoal" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '1.1rem' }}>{product.status ?? 'In Stock'}</p>
                       </div>
-                      <div className="bg-white rounded-2xl border border-EDE6DA p-5">
+                      <div className="bg-white rounded-2xl border border-[#EDE6DA] p-5">
                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-1" style={{ fontFamily: 'var(--font-inter)' }}>Finish Type</p>
                         <p className="font-bold text-charcoal" style={{ fontFamily: 'var(--font-cormorant)', fontSize: '1.1rem' }}>{techSpecs.finish ?? product.finish ?? 'Premium'}</p>
                       </div>
@@ -2381,7 +2469,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
                         <p className="text-[9px] uppercase font-bold tracking-widest text-[#9B8E7E] mb-3" style={{ fontFamily: 'var(--font-inter)' }}>Suitable For</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {product.applications.map((app: string, i: number) => (
-                            <div key={i} className="flex items-center gap-3 p-3.5 bg-white border border-EDE6DA rounded-xl">
+                            <div key={i} className="flex items-center gap-3 p-3.5 bg-white border border-[#EDE6DA] rounded-xl">
                               <span className="w-2 h-2 rounded-full shrink-0" style={{ background: accent }} />
                               <p className="text-[14px] text-charcoal font-medium" style={{ fontFamily: 'var(--font-inter)' }}>{app}</p>
                             </div>
@@ -2426,7 +2514,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.06, duration: 0.3 }}
-                            className="group flex flex-col gap-3 p-5 bg-white border border-EDE6DA rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
+                            className="group flex flex-col gap-3 p-5 bg-white border border-[#EDE6DA] rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
                           >
                             {/* Icon circle */}
                             <div className="flex items-center gap-3">
@@ -2459,7 +2547,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
                           initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.07 }}
-                          className="bg-white border border-EDE6DA rounded-2xl overflow-hidden"
+                          className="bg-white border border-[#EDE6DA] rounded-2xl overflow-hidden"
                           style={{ borderLeft: `3px solid ${isOpen ? accent : '#EDE6DA'}` }}
                         >
                           <button
@@ -2513,9 +2601,9 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
                 {/* ── SPECIFICATIONS ── */}
                 {activeTab === 'specs' && (
                   <motion.div key="specs" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.22 }}>
-                    <div className="bg-white border border-EDE6DA rounded-2xl overflow-hidden">
+                    <div className="bg-white border border-[#EDE6DA] rounded-2xl overflow-hidden">
                       {/* Section heading */}
-                      <div className="px-6 py-4 border-b border-EDE6DA" style={{ background: `${accent}06` }}>
+                      <div className="px-6 py-4 border-b border-[#EDE6DA]" style={{ background: `${accent}06` }}>
                         <p className="text-[11px] uppercase font-black tracking-widest" style={{ color: accent, fontFamily: 'var(--font-inter)' }}>Technical Data Sheet</p>
                       </div>
                       <div className="px-6 py-2">
@@ -2546,7 +2634,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
             </div>
 
             {/* ── CTA Buttons ── */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-EDE6DA">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-[#EDE6DA]">
               <Link
                 href="/assistance"
                 className="group relative inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl text-xs uppercase tracking-widest font-black text-white shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex-1 overflow-hidden"
@@ -2558,7 +2646,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
               </Link>
               <button
                 onClick={() => router.push('/products')}
-                className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white border border-EDE6DA text-charcoal rounded-xl text-xs uppercase tracking-widest font-black shadow-sm hover:bg-FDFBF7 hover:border-D5CBBC active:scale-[0.98] transition-all"
+                className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white border border-[#EDE6DA] text-charcoal rounded-xl text-xs uppercase tracking-widest font-black shadow-sm hover:bg-[#FDFBF7] hover:border-[#D5CBBC] active:scale-[0.98] transition-all"
                 style={{ fontFamily: 'var(--font-inter)', letterSpacing: '0.1em' }}
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Back to Catalog
@@ -2679,7 +2767,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
                   { icon: <BadgeCheck className="w-5 h-5" />, label: 'Quality Tested', val: '12-Stage QC' },
                   { icon: <Eye className="w-5 h-5" />, label: 'Colour Verified', val: 'Lab Matched' },
                 ].map(({ icon, label, val }) => (
-                  <div key={label} className="flex items-center gap-3 p-4 rounded-xl border border-EDE6DA bg-FAF8F5">
+                  <div key={label} className="flex items-center gap-3 p-4 rounded-xl border border-[#EDE6DA] bg-[#FAF8F5]">
                     <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${accent}12`, color: accent }}>{icon}</div>
                     <div>
                       <p className="text-[9px] uppercase tracking-wider font-black text-[#9B8E7E]" style={{ fontFamily: 'var(--font-inter)' }}>{label}</p>
@@ -2703,7 +2791,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
                 { end: 10, suffix: ' Yrs', label: 'Proven Performance Life' },
                 { end: 100, suffix: '%', label: 'Eco-Friendly & Low VOC' },
               ].map(({ end, suffix, label }) => (
-                <div key={label} className="p-6 rounded-2xl border border-EDE6DA bg-FAF8F5 text-center">
+                <div key={label} className="p-6 rounded-2xl border border-[#EDE6DA] bg-[#FAF8F5] text-center">
                   <p className="font-bold text-4xl mb-1" style={{ fontFamily: 'var(--font-cormorant)', color: accent }}>
                     <CountUp end={end} suffix={suffix} />
                   </p>
@@ -2715,9 +2803,73 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
         </div>
       </section>
 
+      {/* ──════════════════ FAQ ══════════════════ */}
+      <section className="py-16 bg-[#FAF8F5] border-t border-[#EDE6DA]">
+        <div className="max-w-[880px] mx-auto px-6">
+          <div className="mb-10 text-center">
+            <div className="inline-flex items-center gap-2 mb-3">
+              <span className="w-3 h-[1.5px]" style={{ background: accent }} />
+              <p className="text-[10px] uppercase tracking-[0.25em] font-black" style={{ color: accent, fontFamily: 'var(--font-inter)' }}>Frequently Asked</p>
+              <span className="w-3 h-[1.5px]" style={{ background: accent }} />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-charcoal" style={{ fontFamily: 'var(--font-cormorant)' }}>
+              Common Questions About {product.name}
+            </h2>
+          </div>
+
+          <div className="space-y-3">
+            {faqItems.map((item, i) => {
+              const isOpen = openFaq === i
+              return (
+                <motion.div
+                  key={item.q}
+                  initial={{ opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ delay: i * 0.06 }}
+                  className="bg-white border border-[#EDE6DA] rounded-2xl overflow-hidden"
+                >
+                  <button
+                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    className="w-full flex items-center gap-4 px-5 py-4 text-left"
+                  >
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors duration-200"
+                      style={{ background: isOpen ? accent : `${accent}14`, color: isOpen ? '#fff' : accent }}
+                    >
+                      <HelpCircle className="w-4 h-4" />
+                    </div>
+                    <p className="flex-1 text-[14px] font-bold text-charcoal" style={{ fontFamily: 'var(--font-inter)' }}>{item.q}</p>
+                    <ChevronDown
+                      className="w-4 h-4 shrink-0 transition-transform duration-300"
+                      style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', color: isOpen ? accent : '#9B8E7E' }}
+                    />
+                  </button>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <p className="px-5 pb-5 pl-[60px] text-[13.5px] text-charcoal-muted leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
+                          {item.a}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* ──════════════════ RELATED PRODUCTS ══════════════════ */}
       {related.length > 0 && (
-        <section className="border-t border-EDE6DA py-20 bg-FAF8F5">
+        <section className="border-t border-[#EDE6DA] py-20 bg-[#FAF8F5]">
           <div className="max-w-[1280px] mx-auto px-6">
             <div className="mb-10">
               <p className="text-[10px] uppercase tracking-[0.25em] font-black mb-1" style={{ color: '#B8A48A', fontFamily: 'var(--font-inter)' }}>You May Also Like</p>
@@ -2730,7 +2882,7 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
                   <Link
                     key={p.id}
                     href={`/products/${p.slug}`}
-                    className="group block flex flex-col justify-between rounded-[1.8rem] bg-white border border-EDE6DA overflow-hidden hover:shadow-[0_24px_50px_rgba(45,45,45,0.06)] hover:-translate-y-1 transition-all duration-500 h-full"
+                    className="group block flex flex-col justify-between rounded-[1.8rem] bg-white border border-[#EDE6DA] overflow-hidden hover:shadow-[0_24px_50px_rgba(45,45,45,0.06)] hover:-translate-y-1 transition-all duration-500 h-full"
                   >
                     <div>
                       <div className="h-1 w-full" style={{ background: relAccent }} />

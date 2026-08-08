@@ -47,7 +47,7 @@
 //     <Link href="/" className="flex items-center gap-4 flex-shrink-0 min-w-[260px]">
 //       <div className="w-[62px] h-[62px] rounded-2xl flex items-center justify-center bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-[#E8E2D8] p-2 shrink-0">
 //         <Image
-//           src="/Ara_Weather_Coat.png"
+//           src="/AraWeather.png"
 //           alt="Colorsome logo"
 //           width={62}
 //           height={62}
@@ -347,7 +347,7 @@
 //           <Link href="/" className="flex items-center gap-4 flex-shrink-0 min-w-[260px]">
 //             <div className="w-[62px] h-[62px] rounded-2xl flex items-center justify-center bg-white shadow-sm border border-[#E8E2D8] p-2 shrink-0">
 //               <Image
-//                 src="/Ara_Weather_Coat.png"
+//                 src="/AraWeather.png"
 //                 alt="Colorsome logo"
 //                 width={62}
 //                 height={62}
@@ -695,7 +695,7 @@ export default function ContactPage() {
                 animate={{ opacity: [0.5, 0.9, 0.5] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
               />
-              <div className="relative w-44 h-44 rounded-full bg-white border border-[#EDE6DA] shadow-xl flex items-center justify-center">
+              <div className="relative w-44 h-44 rounded-full bg-white border border-[#EDE6DA] shadow-[0_20px_50px_rgba(45,45,45,0.1)] flex items-center justify-center">
                 <Phone className="w-14 h-14 text-[#C4704B]/25" />
               </div>
               {[
@@ -705,7 +705,7 @@ export default function ContactPage() {
               ].map(({ Icon, top, left, color }, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-12 h-12 rounded-2xl bg-white border shadow-lg flex items-center justify-center"
+                  className="absolute w-12 h-12 rounded-2xl bg-white border shadow-[0_12px_30px_rgba(0,0,0,0.1)] flex items-center justify-center"
                   style={{ top, left, borderColor: `${color}30` }}
                   animate={{ y: [0, -10, 0] }}
                   transition={{ duration: 3.5 + i * 0.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
@@ -719,7 +719,7 @@ export default function ContactPage() {
       </section>
 
       {/* ── CONTACT INFO CARDS ── */}
-      <section className="py-6 sm:py-12 md:py-16 relative">
+      <section className="py-12 sm:py-16 md:py-20 relative">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
@@ -733,7 +733,7 @@ export default function ContactPage() {
                 key={c.label}
                 variants={fadeInUp}
                 whileHover={{ y: -4, scale: 1.01 }}
-                className="relative bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 border shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-xl hover:bg-white overflow-hidden group"
+                className="relative bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-6 sm:p-8 border shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_20px_50px_rgba(45,45,45,0.1)] hover:bg-white overflow-hidden group"
                 style={{ borderColor: `${c.color}20` }}
               >
                 <div
@@ -744,7 +744,7 @@ export default function ContactPage() {
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 block mb-2" style={{ fontFamily: 'var(--font-inter)' }}>{c.label}</span>
                 {c.href ? (
-                  <a href={c.href} className="font-serif text-lg sm:text-xl font-bold text-[#2D2D2D] transition-colors inline-flex items-start gap-1.5 break-all" style={{ color: undefined }}>
+                  <a href={c.href} className="font-serif text-lg sm:text-xl font-bold text-[#2D2D2D] transition-colors inline-flex items-start gap-1.5 break-all py-1.5 -my-1.5">
                     <span className="break-all group-hover:opacity-80 transition-opacity">{c.value}</span>
                     <ExternalLink className="w-4 h-4 opacity-40 group-hover:opacity-100 transition-opacity shrink-0 mt-1" />
                   </a>
@@ -781,7 +781,7 @@ export default function ContactPage() {
             <motion.div key={o.city} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
               initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={staggerContainer}>
 
-              {/* Left Column: Image Card Card (With Embeded Mobile Info) */}
+              {/* Left Column: Image card (with embedded mobile info) */}
               <motion.div variants={fadeInUp} whileHover={{ y: -4 }} className="lg:col-span-7 w-full transition-transform">
                 <div className="bg-white rounded-3xl overflow-hidden shadow-[0_15px_45px_rgba(0,0,0,0.05)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.09)] border border-[#EDE6DA]/70 transition-shadow duration-400 group">
                   
@@ -791,19 +791,18 @@ export default function ContactPage() {
                       src="/aboutpage.png"
                       alt="Colorsome HQ Office Building"
                       fill
-                      priority
-                      className="object-cover transition-transform duration-700 group-hover:scale-103"
+                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                       unoptimized
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
                     
                     {/* Corner Map Indicator */}
                     <div className="absolute bottom-4 left-4 right-4 text-white flex items-center justify-between z-10" style={{ fontFamily: 'var(--font-inter)' }}>
-                      <div>
-                        <p className="text-[11px] text-gray-300 font-medium tracking-wide">Ambegaon Budruk</p>
-                        <p className="font-serif text-sm sm:text-base font-bold mt-0.5">Right Behind D-Mart Exit</p>
+                      <div className="min-w-0 flex-1 mr-3">
+                        <p className="text-[11px] text-gray-300 font-medium tracking-wide truncate">Ambegaon Budruk</p>
+                        <p className="font-serif text-sm sm:text-base font-bold mt-0.5 truncate">Right Behind D-Mart Exit</p>
                       </div>
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8C6478] to-[#C4704B] flex items-center justify-center shadow-md">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8C6478] to-[#C4704B] flex items-center justify-center shadow-[0_4px_14px_rgba(0,0,0,0.35)]">
                         <MapPin className="w-4 h-4 text-white" />
                       </div>
                     </div>
@@ -811,18 +810,19 @@ export default function ContactPage() {
 
                   {/* MOBILE & TABLET ONLY DIRECT ADDRESS AREA (Cleans up stacking duplicate loops) */}
                   <div className="p-6 block lg:hidden bg-white" style={{ fontFamily: 'var(--font-inter)' }}>
-                    <div className="inline-flex items-center gap-1.5 bg-[#F3E7C9] text-[#2D2D2D] font-bold text-[11px] uppercase tracking-wider px-2.5 py-1 rounded-md mb-3">
+                    <div className="inline-flex items-center gap-1.5 bg-[#F3E7C9] text-[#2D2D2D] font-bold text-[11px] uppercase tracking-wider px-2.5 py-1 rounded-full mb-3">
                       {o.city}
                     </div>
                     <h3 className="font-serif font-black text-xl text-[#2D2D2D] mb-2">{o.tagline}</h3>
                     <p className="text-sm text-[#6B6B6B] leading-relaxed mb-5">{o.address}</p>
-                    
+
                     <div className="pt-4 border-t border-[#EDE6DA]/60 flex flex-col gap-3">
-                      <a href={`tel:${o.phone}`} className="inline-flex items-center gap-2.5 text-sm font-bold text-[#2D2D2D]">
+                      <a href={`tel:${o.phone}`} className="inline-flex items-center gap-2.5 text-sm font-bold text-[#2D2D2D] py-2">
                         <Phone className="w-4 h-4 text-[#C4704B]" /> {o.phone}
                       </a>
-                      <a href="https://maps.google.com/?q=C-403+Akshay+Villa+Ram+Nagari+Ambegaon+Budruk+Katraj+Pune" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-1.5 py-3 rounded-xl text-xs uppercase font-black tracking-wider text-white bg-gradient-to-r from-[#C4704B] to-[#8C6478] shadow-md">
-                        Get Navigation Routes <ArrowRight className="w-4 h-4" />
+                      <a href={`https://maps.google.com/?q=${encodeURIComponent(o.address)}`} target="_blank" rel="noopener noreferrer" className="group relative overflow-hidden w-full inline-flex items-center justify-center gap-1.5 py-3.5 rounded-xl text-xs uppercase font-black tracking-wider text-white bg-gradient-to-r from-[#C4704B] to-[#8C6478] shadow-[0_10px_25px_rgba(196,112,75,0.2)] hover:shadow-[0_14px_32px_rgba(196,112,75,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%)' }} />
+                        <span className="relative">Get Navigation Routes</span> <ArrowRight className="w-4 h-4 relative" />
                       </a>
                     </div>
                   </div>
@@ -857,7 +857,7 @@ export default function ContactPage() {
                       </div>
                       {o.phone}
                     </a>
-                    <a href="https://maps.google.com/?q=C-403+Akshay+Villa+Ram+Nagari+Ambegaon+Budruk+Katraj+Pune" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-between p-4 rounded-2xl border border-[#C4704B]/30 text-sm font-bold text-[#C4704B] bg-[#C4704B]/[0.04] hover:bg-[#C4704B]/[0.08] transition-colors group">
+                    <a href={`https://maps.google.com/?q=${encodeURIComponent(o.address)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-between p-4 rounded-2xl border border-[#C4704B]/30 text-sm font-bold text-[#C4704B] bg-[#C4704B]/[0.04] hover:bg-[#C4704B]/[0.08] hover:scale-[1.01] active:scale-[0.99] transition-all group">
                       <span>Launch Google Map Directions</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </a>
@@ -911,7 +911,7 @@ export default function ContactPage() {
                 key={item.title}
                 variants={fadeInUp}
                 whileHover={{ y: -6 }}
-                className="group relative text-left bg-white/90 backdrop-blur-sm border rounded-2xl p-6 sm:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-xl hover:bg-white transition-all duration-300 overflow-hidden"
+                className="group relative text-left bg-white/90 backdrop-blur-sm border rounded-2xl p-6 sm:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_20px_50px_rgba(45,45,45,0.1)] hover:bg-white transition-all duration-300 overflow-hidden"
                 style={{ borderColor: `${item.color}20` }}
               >
                 <item.icon

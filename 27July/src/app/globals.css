@@ -321,6 +321,24 @@
   color: var(--charcoal);
 }
 
+/* Slightly smaller floor on the narrowest phones only (320-374px) so a
+   forced <br/> line break inside the heading doesn't wrap a second time;
+   640px+ (sm and up, including desktop) is untouched. */
+@media (max-width: 374px) {
+  .hero-title {
+    font-size: clamp(1.85rem, 8vw, 4.2rem);
+  }
+}
+
+/* Same idea for .section-title (h2-level headings) — lower the mobile floor
+   only below 480px; 480px+ (including all tablet/desktop widths) keeps the
+   original clamp exactly as-is. */
+@media (max-width: 480px) {
+  .section-title {
+    font-size: clamp(1.85rem, 7vw, 4.1rem);
+  }
+}
+
 /* h1/h2 on dark/coloured backgrounds — Fraunces display serif */
 .hero-title-light {
   font-family: var(--font-display), Georgia, serif;
@@ -433,6 +451,26 @@
   @keyframes slideRight {
     from { opacity: 0; transform: translateX(-20px); }
     to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ─── Infinite product marquee — CSS-driven (not Framer Motion) so
+     pause-on-hover/touch is a native animation-play-state toggle: it
+     resumes exactly where it stopped, with no restart jump. ───────────── */
+  @keyframes marqueeForward {
+    from { transform: translateX(0%); }
+    to   { transform: translateX(-50%); }
+  }
+  @keyframes marqueeReverse {
+    from { transform: translateX(-50%); }
+    to   { transform: translateX(0%); }
+  }
+
+  /* Hero showcase auto-advance progress fill — animation-play-state lets
+     hover/touch freeze it mid-fill instead of resetting, same technique as
+     the marquee pause above. */
+  @keyframes heroProgressFill {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
   }
 
   /* ─── Scroll reveal (IntersectionObserver-driven, see ScrollReveal.tsx) ───── */
