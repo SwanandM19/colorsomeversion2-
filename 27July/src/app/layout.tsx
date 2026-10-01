@@ -8,7 +8,11 @@ import { ScrollReveal } from '../components/ScrollReveal';
 import { PaletteProvider } from '../lib/palette';
 
 export const metadata: Metadata = {
-  title: 'Colorsome Paints ',
+  metadataBase: new URL('https://www.colorsomepaints.com'),
+  title: {
+    default: 'Colorsome Paints | Premium Interior & Exterior Paints',
+    template: '%s | Colorsome Paints',
+  },
   description:
     'Premium interior and exterior paints with superior finish, lasting durability, and rich colour depth. Expert guidance for perfect results.',
 };

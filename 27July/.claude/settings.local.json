@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo \"=== New_38_Products_Restructured folder ===\" *)",
+      "Read(//c/Users/Pranav/Downloads/**)"
+    ]
+  }
+}

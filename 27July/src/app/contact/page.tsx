@@ -288,7 +288,7 @@
 // import { useEffect, useState } from 'react';
 // import Image from 'next/image';
 // import Link from 'next/link';
-// import { MapPin, Phone, Mail, Clock, ArrowRight, Menu, X, Sparkles, Building2, ExternalLink, Package, Palette, Eye } from 'lucide-react';
+// import { MapPin, Phone, Mail, Clock, ArrowRight, Menu, X, Sparkles, Building2, ExternalLink, Package, Palette, Eye, MessageCircle } from 'lucide-react';
 // import { motion, AnimatePresence } from 'framer-motion';
 // import { Footer } from '@/src/components/Footer';
 
@@ -577,7 +577,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapPin, Phone, Mail, Clock, ArrowRight, Menu, X, Sparkles, Building2, ExternalLink, Package, Palette, Eye } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, ArrowRight, Menu, X, Sparkles, Building2, ExternalLink, Package, Palette, Eye, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Footer } from '@/src/components/Footer';
 import { Header } from '@/src/components/Header';
@@ -755,6 +755,49 @@ export default function ContactPage() {
                 <div className="h-[2px] w-6 group-hover:w-full transition-all duration-500 rounded-full mt-4" style={{ background: c.color }} />
               </motion.div>
             ))}
+          </motion.div>
+
+          {/* ── CONSULTATION FORM CTA — this page previously offered no path
+              to an actual inquiry other than a phone call or email address;
+              a visitor who preferred filling out a form had nowhere to go.
+              This drives straight to the real lead-capture form on
+              /assistance, deep-linked (via the section id added there) so
+              it lands directly on the form instead of the top of the page. ── */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={fadeInUp}
+            className="relative overflow-hidden rounded-2xl sm:rounded-3xl mt-4 sm:mt-6 px-6 sm:px-10 py-8 sm:py-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_20px_50px_rgba(45,45,45,0.14)]"
+            style={{ background: `linear-gradient(135deg, ${BRAND.pink} 0%, ${BRAND.orange} 100%)` }}
+          >
+            <div
+              className="absolute inset-0 opacity-[0.08] pointer-events-none"
+              style={{
+                backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(to right, #fff 1px, transparent 1px)`,
+                backgroundSize: '28px 28px',
+              }}
+            />
+            <div className="relative z-10 text-center md:text-left">
+              <div className="inline-flex items-center gap-2 bg-white/15 text-white font-black text-[10px] tracking-wider uppercase px-3 py-1 rounded-full mb-3" style={{ fontFamily: 'var(--font-inter)' }}>
+                <MessageCircle className="w-3.5 h-3.5" /> Prefer Not To Call?
+              </div>
+              <h3 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2">
+                Tell Us About Your Project Instead
+              </h3>
+              <p className="text-white/85 text-sm sm:text-base max-w-lg" style={{ fontFamily: 'var(--font-inter)' }}>
+                Share a few details and our experts will get back to you within 24 hours - no phone call needed.
+              </p>
+            </div>
+            <Link
+              href="/assistance#consultation-form"
+              className="group relative overflow-hidden shrink-0 inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-bold uppercase tracking-wide text-[#2D2D2D] bg-white shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition-transform active:scale-[0.98]"
+              style={{ fontFamily: 'var(--font-inter)' }}
+            >
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[1100ms] ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(0,0,0,0.08) 50%, transparent 70%)' }} />
+              <span className="relative">Get Free Consultation</span>
+              <ArrowRight className="w-4 h-4 relative transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
           </motion.div>
         </div>
       </section>

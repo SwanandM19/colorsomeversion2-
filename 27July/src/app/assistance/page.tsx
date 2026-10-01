@@ -327,13 +327,13 @@
 //                     <p className="font-medium text-sm">+91 12345 67890</p>
 //                   </div>
 //                 </a>
-//                 <a href="mailto:expert@colorsome.com" className="flex items-center gap-3 text-charcoal hover:text-gold transition-colors">
+//                 <a href="mailto:expert@colorsomepaints.com" className="flex items-center gap-3 text-charcoal hover:text-gold transition-colors">
 //                   <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center">
 //                     <Mail className="w-5 h-5 text-gold" />
 //                   </div>
 //                   <div>
 //                     <p className="text-xs text-charcoal-muted">Email</p>
-//                     <p className="font-medium text-sm">expert@colorsome.com</p>
+//                     <p className="font-medium text-sm">expert@colorsomepaints.com</p>
 //                   </div>
 //                 </a>
 //               </div>
@@ -957,13 +957,13 @@ function AssistancePageContent() {
                     <p className="font-bold text-sm tracking-wide">+91-75020-00079</p>
                   </div>
                 </a>
-                <a href="mailto:expert@colorsome.com" className="group flex items-center gap-3 text-charcoal hover:text-[#8C6478] transition-all duration-300">
+                <a href="mailto:expert@colorsomepaints.com" className="group flex items-center gap-3 text-charcoal hover:text-[#8C6478] transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-[#EDE6DA] flex items-center justify-center group-hover:shadow-md group-hover:border-[#8C6478]/30 transition-all duration-300">
                     <Mail className="w-5 h-5 text-[#8C6478]" />
                   </div>
                   <div>
                     <p className="text-[10px] uppercase tracking-wider text-charcoal-muted font-bold">Email</p>
-                    <p className="font-bold text-sm tracking-wide">expert@colorsome.com</p>
+                    <p className="font-bold text-sm tracking-wide">expert@colorsomepaints.com</p>
                   </div>
                 </a>
               </div>
@@ -1049,7 +1049,10 @@ function AssistancePageContent() {
       </section>
 
       {/* CONSULTATION CORE CONTAINER (Added the scroll ref point) */}
-      <section ref={formRef} className="py-12 max-w-[1280px] mx-auto px-6 scroll-mt-24">
+      {/* id (not just the formRef used for in-page scroll triggers above) lets
+          other pages deep-link straight to the form via /assistance#consultation-form —
+          native browser hash scrolling, not a React ref, so it works across navigation. */}
+      <section id="consultation-form" ref={formRef} className="py-12 max-w-[1280px] mx-auto px-6 scroll-mt-24">
         <div className="grid lg:grid-cols-5 gap-12 items-start">
           {/* Main Booking Form Card Frame */}
           <div className="lg:col-span-3">

@@ -1,4 +1,4 @@
-const BASE_URL = "https://www.colorsomepaints.in";
+const BASE_URL = "https://www.colorsomepaints.com";
 
 export function getRobotsTxt() {
   return [

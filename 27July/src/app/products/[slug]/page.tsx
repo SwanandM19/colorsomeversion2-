@@ -1707,10 +1707,11 @@ import {
   Paintbrush, Star, Clock, Award, FlaskConical, Ruler,
   Sparkles, Package, ChevronDown, Eye, BadgeCheck,
   ThumbsUp, Info, Beaker, Hammer, HelpCircle,
-  Home as HomeIcon, Palette, Mail
+  Home as HomeIcon, Palette, Mail, Download, FileText
 } from 'lucide-react'
 import { products } from '../data'
 import { getCategoryFaq } from '../faqTemplates'
+import { getCatalogPdfUrl } from '../catalogPdfMap'
 import { Footer } from '@/src/components/Footer';
 
 // Restrained luxury palette — see src/lib/palette.ts for the shared source.
@@ -1885,6 +1886,7 @@ function ProductDetailContainer({ slug }: { slug: string }) {
 const product = products.find(p => cleanStr(p.slug) === cleanStr(slug));
 const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug));
   const accent = ACCENTS[productIndex !== -1 ? productIndex % ACCENTS.length : 0]
+  const catalogPdfUrl = product ? getCatalogPdfUrl(product.slug) : null
 
   type Tab = 'overview' | 'features' | 'howto' | 'specs'
   const [activeTab, setActiveTab] = useState<Tab>('overview')
@@ -2315,6 +2317,34 @@ const productIndex = products.findIndex(p => cleanStr(p.slug) === cleanStr(slug)
                 </div>
               ))}
             </div>
+
+            {/* ── Catalog PDF Download — placed right after the stat strip so
+                it's visible without scrolling, styled as a real CTA (gradient
+                fill + shimmer sweep) rather than a plain info card, matching
+                the "Get Expert Consultation" button's treatment further down
+                this page so the two read as equally important actions. */}
+            {catalogPdfUrl && (
+              <a
+                href={catalogPdfUrl}
+                download
+                className="group relative overflow-hidden mt-5 flex items-center gap-4 rounded-2xl px-5 py-4 text-white shadow-[0_14px_34px_rgba(0,0,0,0.16)] transition-transform duration-200 active:scale-[0.99]"
+                style={{ background: `linear-gradient(135deg, ${accent} 0%, ${accent}CC 100%)` }}
+              >
+                <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-[1100ms] ease-out" style={{ background: 'linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%)' }} />
+                <span className="relative w-11 h-11 rounded-xl flex items-center justify-center shrink-0 bg-white/20">
+                  <FileText className="w-5 h-5" />
+                </span>
+                <span className="relative flex-1 text-left">
+                  <span className="block text-[9px] uppercase tracking-widest font-black opacity-80" style={{ fontFamily: 'var(--font-inter)' }}>
+                    Full Specifications &amp; Application Guide
+                  </span>
+                  <span className="block text-sm font-bold" style={{ fontFamily: 'var(--font-inter)' }}>
+                    Download Product Catalog (PDF)
+                  </span>
+                </span>
+                <Download className="relative w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-y-0.5" />
+              </a>
+            )}
 
             {/* ── Pack Size Selector ── */}
             {packSizes.length > 0 && (

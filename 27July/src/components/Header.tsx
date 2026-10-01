@@ -403,6 +403,7 @@ export function Header() {
             className="lg:hidden p-2 rounded-lg text-[#2D2D2D]"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Menu"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>

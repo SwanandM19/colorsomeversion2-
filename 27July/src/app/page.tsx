@@ -78,6 +78,12 @@ const cormorant = Playfair_Display({
 
 // ─── Brand palette ────────────────────────────────────────────────────────────
 
+// Animatable next/image, for the hero showcase's fixed-size product photo —
+// framer-motion needs its own wrapped component to drive initial/animate/exit
+// on an element that isn't a plain DOM tag. Declared at module scope (not
+// inside the component) so it isn't recreated every render.
+const MotionImage = motion.create(Image);
+
 // Restrained, paint-inspired luxury palette (chosen direction — see
 // src/lib/palette.ts for the shared accent source of truth). Keys are
 // kept as "pink/blue/green/orange/yellow" so every existing call site
@@ -953,8 +959,8 @@ export default function HomePage() {
                   bg: "#F0FDF4",
                 },
                 {
-                  src: "/Duraguard_Exterior.png",
-                  name: "Duraguard Exterior",
+                  src: "/DuraGuard_Exterior.png",
+                  name: "DuraGuard Exterior",
                   cat: "Exterior Paint",
                   feat: ["Protection", "Climate-Ready", "Premium"],
                   accent: BRAND.orange,
@@ -1255,12 +1261,13 @@ export default function HomePage() {
                             ~600px-wide images as flex siblings during the crossfade
                             could out-grow the 460px card and spill past its edge. */}
                         <AnimatePresence>
-                          <motion.img
+                          <MotionImage
                             key={`img-${idx}`}
                             src={active.src}
                             alt={active.name}
+                            width={600}
+                            height={600}
                             className="absolute inset-0 m-auto object-contain"
-                            style={{ width: 600, height: 600 }}
                             // The blur is animated via the filter *style* prop, which
                             // (as an inline style) always wins over the drop-shadow-2xl
                             // *class* the image had before — both set the same CSS
@@ -1367,9 +1374,11 @@ export default function HomePage() {
                   >
                     <div className="flex items-center gap-2.5 mb-2.5">
                       <div className="w-9 h-9 rounded-lg bg-[#F7F6F2] border border-gray-200 p-0.5 shrink-0">
-                        <img
+                        <Image
                           src="/Logo.png"
                           alt="logo"
+                          width={36}
+                          height={36}
                           className="w-full h-full object-contain"
                         />
                       </div>
